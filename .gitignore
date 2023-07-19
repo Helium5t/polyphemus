@@ -30,3 +30,12 @@
 
 # VS Code stuff
 .vscode 
+
+# CMake
+*.CMake
+CMakeCache.txt
+Makefile
+build
+CPM_Modules
+CMakeFiles
+_deps

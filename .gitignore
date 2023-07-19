@@ -27,3 +27,6 @@
 *.pch
 
 *.d
+
+# VS Code stuff
+.vscode 

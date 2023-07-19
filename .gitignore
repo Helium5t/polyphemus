@@ -1,0 +1,29 @@
+# Ignore 3D models
+*.slo
+*.obj
+*.lo
+*.o
+*.fbx
+
+# Compilation products
+*.lai
+*.la
+*.a
+*.lib
+
+# Compiled Executables
+*.o
+*.out
+*.app
+*.exe
+
+# DLLs
+.so
+*.dylib
+*.dll
+
+# Headers
+*.gch
+*.pch
+
+*.d

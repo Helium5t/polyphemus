@@ -36,7 +36,10 @@ void Renderer::Cleanup(){
 
 void Renderer::Launch(){
     while(running){
+        HandleInput(glfwWindow);
 
+        glClearColor(0.592f, 0.725f, 0.823f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
         glfwSwapBuffers(glfwWindow);
         glfwPollEvents();
 
@@ -48,5 +51,9 @@ void Renderer::Launch(){
     Cleanup();
 }
 
-
+void Renderer::HandleInput(GLFWwindow* w){
+    if(glfwGetKey(w, GLFW_KEY_ESCAPE) == GLFW_PRESS){
+        glfwSetWindowShouldClose(w, true);
+    }
+}
 

@@ -14,8 +14,12 @@ class Renderer{
         unsigned int screenW = 1920;
         unsigned int screenH = 720;
 
+        // Core functionalities
         void Setup();
         void Update();
         void Render();
         void Cleanup();
+
+        // I/O
+        void HandleInput(GLFWwindow* w);
 };

@@ -1,7 +1,6 @@
-#include <iostream>
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
+#include "render.h"
 
 int main(){
-    printf("Hello World");
+    Renderer r;
+    r.Launch();
 }

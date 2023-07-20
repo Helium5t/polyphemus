@@ -58,7 +58,9 @@ set(
 add_library(glad STATIC ${GLAD_SOURCES} ${GLAD_HEADERS})
 target_include_directories(glad PUBLIC ${GLAD_DIR})
 
-add_executable(polyphemus main.cpp)
+add_executable(
+    polyphemus main.cpp
+    render.cpp)
 target_link_libraries(polyphemus PRIVATE imgui glfw glad OpenGL::GL)
 
 # To make it work on macOS

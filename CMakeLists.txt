@@ -75,12 +75,17 @@ CPMAddPackage(
     GIT_TAG v2.8.0
 )
 
+# GLM 
+CPMAddPackage("gh:g-truc/glm#0.9.9.8")
+
 ####### END DEPENDENCIES #######
 add_executable(
-    polyphemus main.cpp
-    render.cpp)
+    polyphemus 
+    main.cpp
+    render.cpp
+    shaders.cpp)
     
-target_link_libraries(polyphemus PRIVATE imgui glfw tinygltf glad nlohmann_json::nlohmann_json OpenGL::GL)
+target_link_libraries(polyphemus PRIVATE imgui glfw tinygltf glad nlohmann_json::nlohmann_json OpenGL::GL glm)
 
 # To make it work on macOS
 target_link_libraries(polyphemus PRIVATE "-framework Cocoa" "-framework IOKit" "-framework CoreVideo")

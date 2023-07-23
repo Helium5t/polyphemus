@@ -6,6 +6,7 @@
 #include <imgui_impl_opengl3.h>
 #include "shaders.h"
 
+class Shader;
 
 class Renderer{
     public:
@@ -16,7 +17,7 @@ class Renderer{
 
         // Shading/Drawing
         unsigned int vertArrayObj;
-        unsigned int shader;
+        Shader* shader;
 
         // Window/Engine
         bool running = true;

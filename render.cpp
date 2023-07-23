@@ -1,5 +1,4 @@
 #include "render.h"
-#include "shaders.h"
 #include <iostream>
 #include <imgui.h>
 #include <imgui_impl_opengl3.h>
@@ -46,41 +45,8 @@ Renderer::Renderer(){
 
 
 void Renderer::ShaderSetup(){
-    // Error checking vars
-    int ok;
-    char compileLog[512];
 
-    unsigned int vShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vShader, 1, &hellotriVertexSource, NULL);
-    glCompileShader(vShader);
-
-    glGetShaderiv(vShader, GL_COMPILE_STATUS, &ok);
-    if(!ok){
-        glGetShaderInfoLog(vShader, 512, NULL, compileLog);
-        std::cout << "Vertex Compilation Failure" << std::endl;
-        throw std::runtime_error("[SETUP][ERR][SHADER][VERTEX][COMPILATION] Failed: " + std::string(compileLog));
-    }
-
-    unsigned int fShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fShader, 1, &hellotriFragmentSource, NULL);
-    glCompileShader(fShader);
-
-    glGetShaderiv(fShader, GL_COMPILE_STATUS, &ok);
-    if(!ok){
-        glGetShaderInfoLog(fShader, 512, NULL, compileLog);
-        throw std::runtime_error("[SETUP][ERR][SHADER][FRAGMENT][COMPILATION] Failed: " + std::string(compileLog));
-    }
-
-    shader = glCreateProgram();
-    glAttachShader(shader, vShader);
-    glAttachShader(shader, fShader);
-    glLinkProgram(shader);
-
-    glGetProgramiv(shader, GL_LINK_STATUS, &ok);
-    if(!ok){
-        glGetProgramInfoLog(shader, 512, NULL, compileLog);
-        throw std::runtime_error("[SETUP][ERR][SHADER][LINKING][COMPILATION] Failed: " + std::string(compileLog));
-    }
+    shader = new Shader("hellotri.vert", "hellotri.frag");
 
     // It's going away soon. Just for testing
     float vertices[] = {
@@ -142,7 +108,8 @@ void Renderer::ProcessFrame(){
 }
 
 void Renderer::Render(){
-    glUseProgram(shader);
+    shader->Bind();
+
     glBindVertexArray(vertArrayObj); // Make sure it's bound.
     glDrawArrays(GL_TRIANGLES, 0, 3);
 

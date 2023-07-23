@@ -29,9 +29,11 @@ set(IMGUI_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps/ImGui)
 set(IMGUI_SOURCES
     ${IMGUI_DIR}/imgui.cpp
     ${IMGUI_DIR}/imgui_draw.cpp
+    ${IMGUI_DIR}/imgui_demo.cpp
     ${IMGUI_DIR}/imgui_tables.cpp
     ${IMGUI_DIR}/imgui_widgets.cpp
     ${IMGUI_DIR}/imgui_impl_opengl3.cpp
+    ${IMGUI_DIR}/imgui_impl_glfw.cpp
 )
 
 set(IMGUI_HEADERS
@@ -40,8 +42,10 @@ set(IMGUI_HEADERS
     ${IMGUI_DIR}/imgui_internal.h
     ${IMGUI_DIR}/imgui_impl_opengl3.h
     ${IMGUI_DIR}/imgui_impl_opengl3_loader.h
+    ${IMGUI_DIR}/imgui_impl_glfw.h
 )
 add_library(imgui STATIC ${IMGUI_SOURCES} ${IMGUI_HEADERS})
+target_link_libraries(imgui PRIVATE glfw)
 target_include_directories(imgui PUBLIC ${IMGUI_DIR})
 
 

@@ -1,8 +1,20 @@
 #include "render.h"
 #include <iostream>
+#include <imgui.h>
+#include <imgui_impl_opengl3.h>
+#include <imgui_impl_glfw.h>
 
 static void GLFWErrorCallback(int error, const char* desc){
     fprintf(stderr, "[GLFW][ERR] %d: %s\n", error, desc);
+}
+
+
+static void setupImgui(GLFWwindow *w, const char *OGLVersion){
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGui::StyleColorsClassic();
+    ImGui_ImplGlfw_InitForOpenGL(w, true);
+    ImGui_ImplOpenGL3_Init(OGLVersion);
 }
 
 Renderer::Renderer(){
@@ -26,20 +38,39 @@ Renderer::Renderer(){
     }
 
     glViewport(0,0,screenW,screenH);
+
+    // imgui init
+    setupImgui(glfwWindow, "#version 410");
 }
 
+#define PP_IMGUI_SHUTDOWN() ImGui_ImplOpenGL3_Shutdown(); ImGui_ImplGlfw_Shutdown();
+
 void Renderer::Cleanup(){
+    PP_IMGUI_SHUTDOWN();
+    
+    ImGui::DestroyContext();
+
+    glfwDestroyWindow(glfwWindow);
     glfwTerminate();
 }
 
+
+#define PP_IMGUI_NEWFRAME() ImGui_ImplOpenGL3_NewFrame(); ImGui_ImplGlfw_NewFrame(); ImGui::NewFrame();
 
 
 void Renderer::Launch(){
     while(running){
         HandleInput(glfwWindow);
 
+        PP_IMGUI_NEWFRAME();
+
         glClearColor(0.592f, 0.725f, 0.823f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
+
+        ImGui::ShowDemoWindow();
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
         glfwSwapBuffers(glfwWindow);
         glfwPollEvents();
 

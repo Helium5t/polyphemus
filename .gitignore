@@ -39,3 +39,6 @@ build
 CPM_Modules
 CMakeFiles
 _deps
+
+# Imgui Ini file
+*.ini

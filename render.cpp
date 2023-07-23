@@ -1,4 +1,5 @@
 #include "render.h"
+#include "shaders.h"
 #include <iostream>
 #include <imgui.h>
 #include <imgui_impl_opengl3.h>
@@ -43,6 +44,76 @@ Renderer::Renderer(){
     setupImgui(glfwWindow, "#version 410");
 }
 
+
+void Renderer::ShaderSetup(){
+    // Error checking vars
+    int ok;
+    char compileLog[512];
+
+    unsigned int vShader = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vShader, 1, &hellotriVertexSource, NULL);
+    glCompileShader(vShader);
+
+    glGetShaderiv(vShader, GL_COMPILE_STATUS, &ok);
+    if(!ok){
+        glGetShaderInfoLog(vShader, 512, NULL, compileLog);
+        std::cout << "Vertex Compilation Failure" << std::endl;
+        throw std::runtime_error("[SETUP][ERR][SHADER][VERTEX][COMPILATION] Failed: " + std::string(compileLog));
+    }
+
+    unsigned int fShader = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fShader, 1, &hellotriFragmentSource, NULL);
+    glCompileShader(fShader);
+
+    glGetShaderiv(fShader, GL_COMPILE_STATUS, &ok);
+    if(!ok){
+        glGetShaderInfoLog(fShader, 512, NULL, compileLog);
+        throw std::runtime_error("[SETUP][ERR][SHADER][FRAGMENT][COMPILATION] Failed: " + std::string(compileLog));
+    }
+
+    shader = glCreateProgram();
+    glAttachShader(shader, vShader);
+    glAttachShader(shader, fShader);
+    glLinkProgram(shader);
+
+    glGetProgramiv(shader, GL_LINK_STATUS, &ok);
+    if(!ok){
+        glGetProgramInfoLog(shader, 512, NULL, compileLog);
+        throw std::runtime_error("[SETUP][ERR][SHADER][LINKING][COMPILATION] Failed: " + std::string(compileLog));
+    }
+
+    // It's going away soon. Just for testing
+    float vertices[] = {
+		-0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
+		 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
+		 0.0f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f 
+	};
+
+    unsigned int vertBufferObj;
+    glGenVertexArrays(1, &vertArrayObj);
+    glGenBuffers(1, &vertBufferObj);
+
+    glBindVertexArray(vertArrayObj);
+    glBindBuffer(GL_ARRAY_BUFFER, vertBufferObj);
+
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0); // Pos
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float))); // Col
+
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+    
+    // Unbind buffer and arr to avoid accidental writes. (binding to 0 does that)
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+
+}
+
+void Renderer::Setup(){
+    ShaderSetup();
+}
+
 #define PP_IMGUI_SHUTDOWN() ImGui_ImplOpenGL3_Shutdown(); ImGui_ImplGlfw_Shutdown();
 
 void Renderer::Cleanup(){
@@ -57,20 +128,35 @@ void Renderer::Cleanup(){
 
 #define PP_IMGUI_NEWFRAME() ImGui_ImplOpenGL3_NewFrame(); ImGui_ImplGlfw_NewFrame(); ImGui::NewFrame();
 
+void Renderer::PreFrame(){
+    PP_IMGUI_NEWFRAME();
+
+    glClearColor(0.592f, 0.725f, 0.823f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+}
+
+void Renderer::ProcessFrame(){
+    HandleInput(glfwWindow);
+
+    ImGui::ShowDemoWindow();
+}
+
+void Renderer::Render(){
+    glUseProgram(shader);
+    glBindVertexArray(vertArrayObj); // Make sure it's bound.
+    glDrawArrays(GL_TRIANGLES, 0, 3);
+
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
 
 void Renderer::Launch(){
+    Setup();
     while(running){
-        HandleInput(glfwWindow);
 
-        PP_IMGUI_NEWFRAME();
-
-        glClearColor(0.592f, 0.725f, 0.823f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        ImGui::ShowDemoWindow();
-        ImGui::Render();
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
+        PreFrame();
+        Render();
+        
         glfwSwapBuffers(glfwWindow);
         glfwPollEvents();
 

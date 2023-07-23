@@ -122,6 +122,7 @@ void Renderer::Launch(){
     while(running){
 
         PreFrame();
+        ProcessFrame();
         Render();
         
         glfwSwapBuffers(glfwWindow);

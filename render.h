@@ -1,6 +1,8 @@
 #pragma once
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <nlohmann/json.hpp>
+#include <tiny_gltf.h>
 
 class Renderer{
     public:

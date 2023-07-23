@@ -6,6 +6,7 @@ project(polyphemus)
 
 include(cmake/CPM.cmake)
 
+####### DEPENDENCIES #######
 # OpenGL
 find_package(OpenGL)
 
@@ -58,10 +59,24 @@ set(
 add_library(glad STATIC ${GLAD_SOURCES} ${GLAD_HEADERS})
 target_include_directories(glad PUBLIC ${GLAD_DIR})
 
+# JSON Parser
+
+CPMAddPackage("gh:nlohmann/json#v3.11.2")
+
+# GLTF Parser
+
+CPMAddPackage(
+    NAME tinygltf
+    GITHUB_REPOSITORY syoyo/tinygltf
+    GIT_TAG v2.8.0
+)
+
+####### END DEPENDENCIES #######
 add_executable(
     polyphemus main.cpp
     render.cpp)
-target_link_libraries(polyphemus PRIVATE imgui glfw glad OpenGL::GL)
+    
+target_link_libraries(polyphemus PRIVATE imgui glfw tinygltf glad nlohmann_json::nlohmann_json OpenGL::GL)
 
 # To make it work on macOS
 target_link_libraries(polyphemus PRIVATE "-framework Cocoa" "-framework IOKit" "-framework CoreVideo")

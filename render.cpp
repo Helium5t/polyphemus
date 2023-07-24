@@ -43,7 +43,6 @@ Renderer::Renderer(){
     setupImgui(glfwWindow, "#version 410");
 }
 
-
 void Renderer::ShaderSetup(){
 
     shader = new Shader("hellotri.vert", "hellotri.frag");
@@ -76,8 +75,15 @@ void Renderer::ShaderSetup(){
 
 }
 
+void Renderer::SceneSetup(){
+    // Camera is facing -Z, Y-Up
+    camera = new Camera(glm::vec3(0.0f, 0.0f, 5.0f), glm::vec3(0.0f,0.0f,-1.0f), glm::vec3(0.0f, 1.0f, 0.0f), screenW, screenH);
+}
+
 void Renderer::Setup(){
     ShaderSetup();
+    SceneSetup();
+    glEnable(GL_DEPTH);
 }
 
 #define PP_IMGUI_SHUTDOWN() ImGui_ImplOpenGL3_Shutdown(); ImGui_ImplGlfw_Shutdown();
@@ -99,12 +105,14 @@ void Renderer::PreFrame(){
 
     glClearColor(0.592f, 0.725f, 0.823f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_DEPTH_BUFFER_BIT);
 }
 
 void Renderer::ProcessFrame(){
     HandleInput(glfwWindow);
 
-    ImGui::ShowDemoWindow();
+    camera->Update(0.0f);
+    camera->DrawDebugUI();
 }
 
 void Renderer::Render(){

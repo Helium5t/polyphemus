@@ -5,8 +5,10 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 #include "shaders.h"
+#include "scene.h"
 
 class Shader;
+class Camera;
 
 class Renderer{
     public:
@@ -25,8 +27,12 @@ class Renderer{
         unsigned int screenW = 1920;
         unsigned int screenH = 720;
 
+        // Scene
+        Camera* camera;
+
         // Core functionalities
         void ShaderSetup();
+        void SceneSetup();
         void Setup();
         void Update();
         void PreFrame();

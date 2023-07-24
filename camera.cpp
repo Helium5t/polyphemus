@@ -1,4 +1,4 @@
-#include "scene.h"
+#include "camera.h"
 #include <iostream>
 #include <imgui.h>
 #include <glm/gtc/matrix_transform.hpp>

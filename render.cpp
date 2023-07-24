@@ -45,7 +45,7 @@ Renderer::Renderer(){
 
 void Renderer::ShaderSetup(){
 
-    shader = new Shader("hellotri.vert", "hellotri.frag");
+    shader = new Shader("hellocam.vert", "hellocam.frag");
 
     // It's going away soon. Just for testing
     float vertices[] = {
@@ -116,6 +116,9 @@ void Renderer::ProcessFrame(){
 }
 
 void Renderer::Render(){
+    glm::mat4 model(1.0f);
+    shader->SetMat4("VPMatrix", camera->VPMatrix());
+    shader->SetMat4("MMatrix", model);
     shader->Bind();
 
     glBindVertexArray(vertArrayObj); // Make sure it's bound.

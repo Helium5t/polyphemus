@@ -9,6 +9,7 @@
 
 class Shader;
 class Camera;
+class Model;
 
 class Renderer{
     public:
@@ -18,7 +19,7 @@ class Renderer{
     private:
 
         // Shading/Drawing
-        unsigned int vertArrayObj;
+        Model* model;
         Shader* shader;
 
         // Window/Engine
@@ -33,6 +34,7 @@ class Renderer{
         // Core functionalities
         void ShaderSetup();
         void SceneSetup();
+        void ModelSetup();
         void Setup();
         void Update();
         void PreFrame();

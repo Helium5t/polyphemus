@@ -1,8 +1,8 @@
-#include "render.h"
 #include <iostream>
 #include <imgui.h>
 #include <imgui_impl_opengl3.h>
 #include <imgui_impl_glfw.h>
+#include "render.h"
 
 static void GLFWErrorCallback(int error, const char* desc){
     fprintf(stderr, "[GLFW][ERR] %d: %s\n", error, desc);
@@ -45,34 +45,7 @@ Renderer::Renderer(){
 
 void Renderer::ShaderSetup(){
 
-    shader = new Shader("hellocam.vert", "hellocam.frag");
-
-    // It's going away soon. Just for testing
-    float vertices[] = {
-		-0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
-		 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
-		 0.0f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f 
-	};
-
-    unsigned int vertBufferObj;
-    glGenVertexArrays(1, &vertArrayObj);
-    glGenBuffers(1, &vertBufferObj);
-
-    glBindVertexArray(vertArrayObj);
-    glBindBuffer(GL_ARRAY_BUFFER, vertBufferObj);
-
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0); // Pos
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float))); // Col
-
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
-    
-    // Unbind buffer and arr to avoid accidental writes. (binding to 0 does that)
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
-
+    shader = new Shader("hellomodel.vert", "hellomodel.frag");
 }
 
 void Renderer::SceneSetup(){
@@ -80,10 +53,21 @@ void Renderer::SceneSetup(){
     camera = new Camera(glm::vec3(0.0f, 0.0f, 5.0f), glm::vec3(0.0f,0.0f,-1.0f), glm::vec3(0.0f, 1.0f, 0.0f), screenW, screenH);
 }
 
+void Renderer::ModelSetup(){
+    model = new Model("assets/models/helmet/Helmet.gltf");
+}
+
 void Renderer::Setup(){
     ShaderSetup();
+    ModelSetup();
     SceneSetup();
-    glEnable(GL_DEPTH);
+
+    glEnable(GL_DEPTH_TEST); 
+
+    // glEnable(GL_CULL_FACE);   
+    // glCullFace(GL_BACK);      
+    // glFrontFace(GL_CCW); 
+    // glDepthFunc(GL_GREATER); 
 }
 
 #define PP_IMGUI_SHUTDOWN() ImGui_ImplOpenGL3_Shutdown(); ImGui_ImplGlfw_Shutdown();
@@ -113,16 +97,13 @@ void Renderer::ProcessFrame(){
 
     camera->Update(0.0f);
     camera->DrawDebugUI();
+    model->DrawDebugUI();
 }
 
 void Renderer::Render(){
-    glm::mat4 model(1.0f);
-    shader->SetMat4("VPMatrix", camera->VPMatrix());
-    shader->SetMat4("MMatrix", model);
     shader->Bind();
-
-    glBindVertexArray(vertArrayObj); // Make sure it's bound.
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    shader->SetMat4("VPMatrix", camera->VPMatrix());
+    model->Draw(camera, shader);
 
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

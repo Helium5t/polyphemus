@@ -82,6 +82,8 @@ CPMAddPackage("gh:g-truc/glm#0.9.9.8")
 add_executable(
     polyphemus 
     main.cpp
+    mesh.cpp
+    model.cpp
     render.cpp
     shaders.cpp
     camera.cpp)

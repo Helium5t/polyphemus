@@ -42,7 +42,7 @@ void Model::Draw(const Camera* camera, const Shader* shader){
 
     shader->SetMat4("MMatrix", mMatrix);
     for(size_t i =0; i < meshes.size(); i++){
-        meshes[i]->Draw(); 
+        meshes[i]->Draw(shader); 
     }
 }
 

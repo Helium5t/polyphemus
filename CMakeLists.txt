@@ -97,6 +97,7 @@ add_executable(
     polyphemus 
     main.cpp
     mesh.cpp
+    textures.cpp
     model.cpp
     render.cpp
     shaders.cpp

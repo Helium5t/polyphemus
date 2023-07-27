@@ -1,6 +1,9 @@
-#include "geometry.h"
 #include <cassert>
+#include <iostream>
 #include <glad/glad.h>
+#include "geometry.h"
+#include "textures.h"
+#include "shaders.h"
 
 /* macro for "POSITION" gltf attribute */
 #define PP_POSITION gltf_meshAttributes[0]
@@ -35,9 +38,31 @@ Mesh::Mesh(tinygltf::Model* model, tinygltf::Primitive primitive, std::string pa
 
     vertexData.clear();
     indices.clear();
+
+    int albedoFileID = model -> materials[primitive.material].pbrMetallicRoughness.baseColorTexture.index;
+    LoadTexture(model, path, TexType::Albedo, albedoFileID);
 }
 
-void Mesh::Draw(){
+void Mesh::LoadTexture(tinygltf::Model* m, std::string path, TexType tt, int texFileID){
+    Texture* t;
+    if(texFileID == -1){
+        std::cerr << "[MESH][WARN][LOAD_TEX] Requested texture is not present in model.";
+        return;
+    }
+
+    int imgID = m->textures[texFileID].source;
+    std::string texURI = m -> images[imgID].uri;
+    std::string dir = path.substr(0, path.find_last_of("/") + 1);
+    std::string texPath = dir + texURI;
+
+    t = new Texture(texPath, tt);
+    textures.push_back(t);
+}
+
+void Mesh::Draw(const Shader* s){
+    for (int i = 0; i < textures.size(); i++){
+        textures[i]->Bind(s);
+    }
     glBindVertexArray(vertArrObj);
     glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
 }

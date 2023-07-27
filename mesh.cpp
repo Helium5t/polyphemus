@@ -54,7 +54,6 @@ void Mesh::LoadTexture(tinygltf::Model* m, std::string path, TexType tt, int tex
     std::string texURI = m -> images[imgID].uri;
     std::string dir = path.substr(0, path.find_last_of("/") + 1);
     std::string texPath = dir + texURI;
-
     t = new Texture(texPath, tt);
     textures.push_back(t);
 }
@@ -150,10 +149,10 @@ void Mesh::Setup(){
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void*)(sizeof(float) * 3));
 
-    glEnableVertexAttribArray(1);
+    glEnableVertexAttribArray(2);
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void*)(sizeof(float) * 6));
 
-    glEnableVertexAttribArray(1);
+    glEnableVertexAttribArray(3);
     glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void*)(sizeof(float) * 8));
 
     glBindVertexArray(0);

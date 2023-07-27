@@ -45,7 +45,8 @@ Renderer::Renderer(){
 
 void Renderer::ShaderSetup(){
 
-    shader = new Shader("hellomodel.vert", "hellomodel.frag");
+    shader = new Shader("hellotex.vert", 
+                        "hellotex.frag");
 }
 
 void Renderer::SceneSetup(){

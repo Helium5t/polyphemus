@@ -3,10 +3,10 @@
 
 class Shader;
 
-#define PP_TEX_ALBEDO "texture_albedo"
-#define PP_TEX_NORMAL "texture_normal"
-#define PP_TEX_MR "texture_mr"
-#define PP_TEX_AO "texture_ao"
+#define PP_TEX_ALBEDO "t_Albedo"
+#define PP_TEX_NORMAL "t_Normal"
+#define PP_TEX_MR     "t_Mr"
+#define PP_TEX_AO     "t_Ao"
 
 enum class TexType{
     Albedo = 0,

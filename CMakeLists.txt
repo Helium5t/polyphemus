@@ -78,6 +78,20 @@ CPMAddPackage(
 # GLM 
 CPMAddPackage("gh:g-truc/glm#0.9.9.8")
 
+# STB IMAGE
+
+set(STB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps/stb_image)
+set(
+    STB_HEADERS
+    deps/stb_image/stb_image_write.h
+    deps/stb_image/stb_image.h
+)
+add_library(stb_image INTERFACE)          
+target_include_directories(stb_image
+    INTERFACE
+    ${STB_HEADERS}
+)
+
 ####### END DEPENDENCIES #######
 add_executable(
     polyphemus 

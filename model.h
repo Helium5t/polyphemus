@@ -28,6 +28,9 @@ class Model{
         glm::vec3 rot;
         glm::vec3 scale{1.0f,1.0f,1.0f};
 
+        // Textures
+        unsigned int shownTextureFlags;
+
         // Geometry
         std::vector<Mesh*> meshes;
 

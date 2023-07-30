@@ -40,7 +40,17 @@ Mesh::Mesh(tinygltf::Model* model, tinygltf::Primitive primitive, std::string pa
     indices.clear();
 
     int albedoFileID = model -> materials[primitive.material].pbrMetallicRoughness.baseColorTexture.index;
+    int mrFileID = model -> materials[primitive.material].pbrMetallicRoughness.metallicRoughnessTexture.index;
+    int normalFileID = model -> materials[primitive.material].normalTexture.index;
+    int aoFileID = model -> materials[primitive.material].occlusionTexture.index;
+    int emissiveFileID = model -> materials[primitive.material].emissiveTexture.index;
+
     LoadTexture(model, path, TexType::Albedo, albedoFileID);
+    LoadTexture(model, path, TexType::MR, mrFileID);
+    LoadTexture(model, path, TexType::Normal, normalFileID);
+    LoadTexture(model, path, TexType::AO, aoFileID);
+    LoadTexture(model, path, TexType::Emissive, emissiveFileID);
+
 }
 
 void Mesh::LoadTexture(tinygltf::Model* m, std::string path, TexType tt, int texFileID){

@@ -7,7 +7,7 @@
 #include "scene.h"
 #include "geometry.h"
 #include "shaders.h"
-
+#include "textures.h"
 
 Model::Model(const std::string& path){
     tinygltf::Model m;
@@ -36,7 +36,7 @@ void Model::Draw(const Camera* camera, const Shader* shader){
     glm::quat rotY = glm::angleAxis(glm::radians( rot.y), UP);
     glm::quat rotZ = glm::angleAxis(glm::radians( rot.z), FORWARD);
     glm::mat4 rotQ = glm::mat4_cast( rotZ * rotY * rotX);
-    mMatrix = rotQ * mMatrix;
+    mMatrix = mMatrix * rotQ;
 
     mMatrix = glm::scale(mMatrix, scale);
 
@@ -44,6 +44,7 @@ void Model::Draw(const Camera* camera, const Shader* shader){
     for(size_t i =0; i < meshes.size(); i++){
         meshes[i]->Draw(shader); 
     }
+    shader->SetInt("texFlag", shownTextureFlags);
 }
 
 void Model::DrawDebugUI(){
@@ -51,5 +52,15 @@ void Model::DrawDebugUI(){
     ImGui::DragFloat3("Position", &pos[0], 0.01f);
     ImGui::DragFloat3("Rotation", &rot[0], 1.0f);
     ImGui::DragFloat3("Scale", &scale[0], 1.0f);
+    if (ImGui::TreeNode("Textures"))
+        {
+            ImGui::CheckboxFlags("Show Albedo",   &shownTextureFlags, 1 << (unsigned) TexType::Albedo);
+            ImGui::CheckboxFlags("Show Normal",   &shownTextureFlags, 1 << (unsigned) TexType::Normal);
+            ImGui::CheckboxFlags("Show MR",       &shownTextureFlags, 1 << (unsigned) TexType::MR);
+            ImGui::CheckboxFlags("Show AO",       &shownTextureFlags, 1 << (unsigned) TexType::AO);
+            ImGui::CheckboxFlags("Show Emissive",       &shownTextureFlags, 1 << (unsigned) TexType::Emissive);
+            ImGui::TreePop();
+            ImGui::Separator();
+        }
     ImGui::End();
 }

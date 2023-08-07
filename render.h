@@ -38,7 +38,7 @@ class Renderer{
         void Setup();
         void Update();
         void PreFrame();
-        void ProcessFrame();
+        void ProcessFrame(float deltaTimeMs, glm::vec2 mouseDelta);
         void Render();
         void Cleanup();
 

@@ -4,6 +4,7 @@
 #include <tiny_gltf.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/euler_angles.hpp>
+#include <GLFW/glfw3.h>
 #include "scene.h"
 #include "geometry.h"
 #include "shaders.h"
@@ -32,9 +33,9 @@ void Model::Draw(const Camera* camera, const Shader* shader){
     glm::mat4 mMatrix(1.0f);
     mMatrix = glm::translate(mMatrix, pos);
 
-    glm::quat rotX = glm::angleAxis(glm::radians( rot.x), RIGHT);
-    glm::quat rotY = glm::angleAxis(glm::radians( rot.y), UP);
-    glm::quat rotZ = glm::angleAxis(glm::radians( rot.z), FORWARD);
+    glm::quat rotX = glm::angleAxis(glm::radians(rot.x), RIGHT);
+    glm::quat rotY = glm::angleAxis(glm::radians(rot.y), UP);
+    glm::quat rotZ = glm::angleAxis(glm::radians(rot.z), FORWARD);
     glm::mat4 rotQ = glm::mat4_cast( rotZ * rotY * rotX);
     mMatrix = mMatrix * rotQ;
 
@@ -47,10 +48,18 @@ void Model::Draw(const Camera* camera, const Shader* shader){
     shader->SetInt("texFlag", shownTextureFlags);
 }
 
+void Model::HandleInput(GLFWwindow *w, float deltaTime, glm::vec2 mouseDelta){
+    if(glfwGetMouseButton(w, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS){
+        rot.x += mouseDelta[1] * deltaTime * rotationSpeed;
+        rot.y += mouseDelta[0] * deltaTime * rotationSpeed;
+    }
+}
+
 void Model::DrawDebugUI(){
     ImGui::Begin("Model Debug");
     ImGui::DragFloat3("Position", &pos[0], 0.01f);
-    ImGui::DragFloat3("Rotation", &rot[0], 1.0f);
+    // ImGui::DragFloat3("Rotation", &rot[0], 1.0f); // We now use input 
+    ImGui::DragFloat("Rotation Speed", &rotationSpeed, 0.1f, 0.01f);
     ImGui::DragFloat3("Scale", &scale[0], 1.0f);
     if (ImGui::TreeNode("Textures"))
         {

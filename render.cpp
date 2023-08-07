@@ -1,4 +1,5 @@
 #include <iostream>
+#include <chrono>
 #include <imgui.h>
 #include <imgui_impl_opengl3.h>
 #include <imgui_impl_glfw.h>
@@ -93,11 +94,12 @@ void Renderer::PreFrame(){
 	glClear(GL_DEPTH_BUFFER_BIT);
 }
 
-void Renderer::ProcessFrame(){
+void Renderer::ProcessFrame(float deltaTimeMs, glm::vec2 mouseDelta){
     HandleInput(glfwWindow);
 
-    camera->Update(0.0f);
+    camera->Update(deltaTimeMs, glfwWindow);
     camera->DrawDebugUI();
+    model-> HandleInput(glfwWindow, deltaTimeMs, mouseDelta);
     model->DrawDebugUI();
 }
 
@@ -112,10 +114,27 @@ void Renderer::Render(){
 
 void Renderer::Launch(){
     Setup();
+
+    // Should probably make deltaTime and mouseDelta members and move this code to its own func
+    static float deltaTime = 0.0f;
+    static std::chrono::high_resolution_clock clk;
+    static auto tInit = std::chrono::time_point_cast<std::chrono::milliseconds>((clk.now())).time_since_epoch();
+    static double prevMouseX, prevMouseY;
+    glfwGetCursorPos(glfwWindow, &prevMouseX , &prevMouseY);
+    static glm::vec2 mouseDelta = glm::vec2(0.0f);
     while(running){
+        auto t = std::chrono::time_point_cast<std::chrono::milliseconds>((clk.now())).time_since_epoch();
+        deltaTime = (t - tInit).count() * 0.001; // pass milliseconds passed
+        tInit = t;
+        double mouseX, mouseY;
+        glfwGetCursorPos(glfwWindow, &mouseX , &mouseY);
+        mouseDelta[0] = mouseX - prevMouseX;
+        mouseDelta[1] = mouseY - prevMouseY;
+        prevMouseX = mouseX;
+        prevMouseY = mouseY;
 
         PreFrame();
-        ProcessFrame();
+        ProcessFrame(deltaTime, mouseDelta);
         Render();
         
         glfwSwapBuffers(glfwWindow);

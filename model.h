@@ -14,6 +14,9 @@ class Model{
     public:
         Model() = delete;
         Model(const std::string& path);
+
+        // Scene
+        void HandleInput(GLFWwindow *w, float deltaTime, glm::vec2 mouseDelta);
         
         // Render
         void Draw(const Camera* camera, const Shader* shader);
@@ -27,6 +30,7 @@ class Model{
         glm::vec3 pos;
         glm::vec3 rot;
         glm::vec3 scale{1.0f,1.0f,1.0f};
+        float rotationSpeed = 10.0f;
 
         // Textures
         unsigned int shownTextureFlags;

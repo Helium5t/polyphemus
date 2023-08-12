@@ -59,3 +59,9 @@ void Camera::DrawDebugUI(){
     ImGui::InputFloat("Far Clip", &far);
     ImGui::End();
 }
+
+void Camera::Resize(float w, float h){
+    viewWidth = w;
+    viewHeight = h;
+    projMatrix = glm::perspective(glm::radians(FOV), viewWidth/viewHeight, near, far);
+}

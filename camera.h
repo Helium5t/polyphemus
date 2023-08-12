@@ -19,6 +19,10 @@ class Camera{
         // View Projection Matrix
         glm::mat4& VPMatrix();
         glm::vec3& Position();
+        void Resize(float newW, float newH);
+
+        float viewHeight;
+        float viewWidth;
     private:
         void HandleInput(float dTime, GLFWwindow *w);
 
@@ -31,9 +35,6 @@ class Camera{
         glm::mat4 projMatrix;
         // view projection matrix
         glm::mat4 vpMatrix;
-
-        float viewHeight;
-        float viewWidth;
 
         float FOV = 45.0f;
         float yaw = -90.0f;

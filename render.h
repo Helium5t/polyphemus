@@ -12,7 +12,11 @@ class Shader;
 class Camera;
 class Model;
 
+static void ResizeEvent(GLFWwindow *wd, int w, int h);
+
 class Renderer{
+
+    friend void ResizeEvent(GLFWwindow*, int,int);
     public:
         Renderer();
 
@@ -28,6 +32,8 @@ class Renderer{
         GLFWwindow* glfwWindow;
         unsigned int screenW = 1920;
         unsigned int screenH = 720;
+
+        void HandleResize(int w,int h);
 
         // Scene
         Camera* camera;

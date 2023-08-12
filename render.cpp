@@ -15,6 +15,16 @@ static void GLFWErrorCallback(int error, const char* desc){
     fprintf(stderr, "[GLFW][ERR] %d: %s\n", error, desc);
 }
 
+static void ResizeEvent(GLFWwindow *wd, int w, int h){
+    auto self = static_cast<Renderer*>(glfwGetWindowUserPointer(wd));
+    self->HandleResize(w,h);
+}
+
+void Renderer::HandleResize(int w, int h){
+    glViewport(0,0,w,h);
+    camera->Resize(w,h);
+}
+
 
 static void setupImgui(GLFWwindow *w, const char *OGLVersion){
     IMGUI_CHECKVERSION();
@@ -59,6 +69,13 @@ void Renderer::ShaderSetup(){
 void Renderer::SceneSetup(){
     // Camera is facing -Z, Y-Up
     camera = new Camera(glm::vec3(0.0f, 0.0f, 5.0f), glm::vec3(0.0f,0.0f,-1.0f), glm::vec3(0.0f, 1.0f, 0.0f), screenW, screenH);
+
+    // Now that we have the camera we can attach the resize event (otherwise segfault)
+    glfwSetWindowUserPointer(glfwWindow, this); 
+    int w,h;
+    glfwGetFramebufferSize(glfwWindow, &w, &h); // Double check that w and h are what we want, if not update state accordingly.
+    ResizeEvent(glfwWindow, w, h);
+    glfwSetFramebufferSizeCallback(glfwWindow, ResizeEvent);
 }
 
 void Renderer::ModelSetup(){

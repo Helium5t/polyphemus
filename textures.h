@@ -3,10 +3,10 @@
 
 class Shader;
 
-#define PP_TEX_ALBEDO "t_Albedo"
-#define PP_TEX_NORMAL "t_Normal"
-#define PP_TEX_MR     "t_Mr"
-#define PP_TEX_AO     "t_Ao"
+#define PP_TEX_ALBEDO   "t_Albedo"
+#define PP_TEX_NORMAL   "t_Normal"
+#define PP_TEX_MR       "t_Mr"
+#define PP_TEX_AO       "t_Ao"
 #define PP_TEX_EMISSIVE "t_Emissive"
 
 enum class TexType{
@@ -16,6 +16,22 @@ enum class TexType{
     AO = 3,
     Emissive = 4,
 };
+
+static std::string tex_name(TexType tt){
+    switch (tt){
+        case TexType::Albedo:
+            return "Albedo";
+        case TexType::Normal:
+            return "Normal";
+        case TexType::MR:
+            return "MR";
+        case TexType::AO:
+            return "AO";
+        case TexType::Emissive:
+            return "Emissive";
+    }
+    return "Unknown";
+}
 
 class Texture{
 

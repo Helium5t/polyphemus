@@ -43,5 +43,8 @@ _deps
 # Imgui Ini file
 *.ini
 
+#macOS rubbish
+.DS_Store
+
 # Screenshots will be added back later
 screenshots

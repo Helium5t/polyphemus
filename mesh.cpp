@@ -56,7 +56,7 @@ Mesh::Mesh(tinygltf::Model* model, tinygltf::Primitive primitive, std::string pa
 void Mesh::LoadTexture(tinygltf::Model* m, std::string path, TexType tt, int texFileID){
     Texture* t;
     if(texFileID == -1){
-        std::cerr << "[MESH][WARN][LOAD_TEX] Requested texture is not present in model.";
+        std::cerr << "[MESH][WARN][LOAD_TEX] Requested texture (" << tex_name(tt) <<") is not present in model." << std::endl;
         return;
     }
 

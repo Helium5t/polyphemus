@@ -4,9 +4,6 @@
 #include <iomanip>
 #include <sstream>
 #include <string>
-#include <imgui.h>
-#include <imgui_impl_opengl3.h>
-#include <imgui_impl_glfw.h>
 #include <stb_image_write.h>
 #include "inputs.h"
 #include "render.h"
@@ -79,7 +76,7 @@ void Renderer::SceneSetup(){
 }
 
 void Renderer::ModelSetup(){
-    model = new Model("assets/models/helmet/Helmet.gltf");
+    model = new Model("assets/models/cubes/BoxAnimated.gltf");
 }
 
 void Renderer::Setup(){

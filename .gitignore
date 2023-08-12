@@ -42,3 +42,6 @@ _deps
 
 # Imgui Ini file
 *.ini
+
+# Screenshots will be added back later
+screenshots

@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <imgui.h>
@@ -44,4 +45,7 @@ class Renderer{
 
         // I/O
         void HandleInput(GLFWwindow* w);
+
+        // Extra
+        void Screenshot(std::string outputPath);
 };

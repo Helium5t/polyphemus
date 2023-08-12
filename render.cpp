@@ -1,8 +1,14 @@
 #include <iostream>
 #include <chrono>
+#include <ctime>
+#include <iomanip>
+#include <sstream>
+#include <string>
 #include <imgui.h>
 #include <imgui_impl_opengl3.h>
 #include <imgui_impl_glfw.h>
+#include <stb_image_write.h>
+#include "inputs.h"
 #include "render.h"
 
 static void GLFWErrorCallback(int error, const char* desc){
@@ -149,8 +155,46 @@ void Renderer::Launch(){
 }
 
 void Renderer::HandleInput(GLFWwindow* w){
-    if(glfwGetKey(w, GLFW_KEY_ESCAPE) == GLFW_PRESS){
+    if(glfwGetKey(w, EXIT_KEY) == GLFW_PRESS){
         glfwSetWindowShouldClose(w, true);
     }
+
+	if (glfwGetKey(w, SCREENSHOT_KEY) == GLFW_PRESS)
+	{
+        auto now = std::chrono::system_clock::now();
+        std::time_t timeNow = std::chrono::system_clock::to_time_t(now);
+        std::tm tmNow;
+        #ifdef _WIN32
+            localtime_s(&tmNow, &timeNow);  // Windows
+        #else
+            localtime_r(&timeNow, &tmNow);  // POSIX
+        #endif
+        std::ostringstream oss;
+        oss << std::put_time(&tmNow, "screenshots/%Y-%m-%d-%H%M%S.png");
+		Screenshot(oss.str());
+	}
+}
+
+// Inspired from https://blog.42yeah.is/opengl/2023/05/27/framebuffer-export.html
+// with some custom changes
+void Renderer::Screenshot(std::string outputPath){
+    int w,h;
+    glfwGetFramebufferSize(glfwWindow, &w,&h);
+    GLsizei colorChannelCount = 3;
+    GLsizei rowStride = colorChannelCount * w;
+    if (rowStride % 4 != 0){
+        rowStride += 4 - rowStride % 4; // padding done here because GL_PACK_ALIGNMENT only takes powers of 2.
+    }
+    GLsizei bufSize = rowStride * h;
+    std::vector<char> buf(bufSize);
+
+    glPixelStorei(GL_PACK_ALIGNMENT, 4);
+    glReadBuffer(GL_FRONT);
+    glReadPixels(0,0,w,h, GL_RGB, GL_UNSIGNED_BYTE, buf.data());
+
+    stbi_flip_vertically_on_write(true);
+
+    stbi_write_png(outputPath.c_str(), w, h, colorChannelCount, buf.data(), rowStride);
+
 }
 

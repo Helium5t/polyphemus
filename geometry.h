@@ -35,4 +35,6 @@ class Mesh{
 
         unsigned int indexCount;
         unsigned int vertBuffObj, vertArrObj, elemBuffObj;
+
+        bool useFallbackShader;
 };

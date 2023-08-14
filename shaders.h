@@ -8,7 +8,7 @@
 
 class Shader{
     public:
-	Shader(const std::string& vertexName, const std::string& fragmentName);
+	Shader(const std::string& vertexName, const std::string& fragmentName, Shader* fb = NULL);
 	~Shader();
 
 	void Bind();
@@ -23,6 +23,11 @@ class Shader{
 	void SetVec2(const std::string& name, glm::vec2& vec) const;
 	void SetVec3(const std::string& name, glm::vec3& vec) const;
 	void SetMat4(const std::string& name, glm::mat4& mat4) const;
+
+	void SetUseFallback(bool value);
 private:
 	unsigned int shaderID;
+
+	bool useFallback;
+	Shader* fallback;
 };

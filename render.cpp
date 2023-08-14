@@ -58,9 +58,14 @@ Renderer::Renderer(){
 }
 
 void Renderer::ShaderSetup(){
-
+    Shader* fallback = new Shader(
+        "fallback.vert",
+        "fallback.frag"
+    );
     shader = new Shader("hellotex.vert", 
-                        "hellotex.frag");
+                        "hellotex.frag",
+                        fallback);
+    shader->SetUseFallback(true); // Temporary, should find a cleaner solution
 }
 
 void Renderer::SceneSetup(){

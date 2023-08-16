@@ -6,6 +6,12 @@
 class Mesh;
 class Shader;
 
+struct Node{
+    std::vector<int> childrenIDs;
+    int meshID = -1;
+    glm::mat4 objectSpaceTransform = glm::mat4(1.f);
+};
+
 class Model{
     public:
         Model() = delete;
@@ -33,5 +39,6 @@ class Model{
 
         // Geometry
         std::vector<Mesh*> meshes;
+        std::vector<Node> nodes;
 
 };

@@ -11,21 +11,26 @@
 #include "textures.h"
 
 Model::Model(const std::string& path){
-    tinygltf::Model m;
+    tinygltf::Model gltfM;
     tinygltf::TinyGLTF loader;
 
     std::string warn, err;
 
-    if (loader.LoadASCIIFromFile(&m, &err, &warn, path)){
-        for(int i=0; i< m.meshes.size(); i++){
-            for(int j=0; j< m.meshes[i].primitives.size(); j++){
-                meshes.push_back(new Mesh(&m, m.meshes[i].primitives[j], path, i));
-            }
-        }
-    }else{
-        std::cout << "[MODEL][LOAD][WARN] " << warn.c_str() << std::endl;
+    bool ok = loader.LoadASCIIFromFile(&gltfM, &err, &warn, path);
+    if (!ok){
         std::cout << "[MODEL][LOAD][ERR] " << err.c_str() << std::endl;
         throw std::runtime_error("[MODEL][LOAD][FAILURE]Failed to load model [" + path + "]:" + err);
+    }
+
+    assert(err.empty() && err.c_str());
+    if (!warn.empty()){
+        std::cout << "[MODEL][LOAD][WARN] " << warn.c_str() << std::endl;
+    }
+
+    for(int i=0; i< gltfM.meshes.size(); i++){
+        for(int j=0; j< gltfM.meshes[i].primitives.size(); j++){
+            meshes.push_back(new Mesh(&gltfM, gltfM.meshes[i].primitives[j], path, i));
+        }
     }
 }
 

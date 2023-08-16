@@ -19,7 +19,7 @@ Model::Model(const std::string& path){
     if (loader.LoadASCIIFromFile(&m, &err, &warn, path)){
         for(int i=0; i< m.meshes.size(); i++){
             for(int j=0; j< m.meshes[i].primitives.size(); j++){
-                meshes.push_back(new Mesh(&m, m.meshes[i].primitives[j], path));
+                meshes.push_back(new Mesh(&m, m.meshes[i].primitives[j], path, i));
             }
         }
     }else{
@@ -41,9 +41,8 @@ void Model::Draw(const Camera* camera, const Shader* shader){
 
     mMatrix = glm::scale(mMatrix, scale);
 
-    shader->SetMat4("MMatrix", mMatrix);
     for(size_t i =0; i < meshes.size(); i++){
-        meshes[i]->Draw(shader); 
+        meshes[i]->Draw(shader, mMatrix); 
     }
     shader->SetInt("texFlag", shownTextureFlags);
 }

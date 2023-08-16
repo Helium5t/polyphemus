@@ -4,10 +4,14 @@
 #include <vector>
 #include <string>
 
+
+#define RIGHT glm::vec3(1,0,0)
+#define UP glm::vec3(0,1,0)
+#define FORWARD glm::vec3(0,0,1)
+
 class Texture;
 class Shader;
 enum class TexType;
-
 
 struct VertexData{
     glm::vec3 position;
@@ -19,8 +23,8 @@ struct VertexData{
 
 class Mesh{
     public:
-        Mesh(tinygltf::Model* model, tinygltf::Primitive primitive, std::string path);
-        void Draw(const Shader* s);
+        Mesh(tinygltf::Model* model, tinygltf::Primitive primitive, std::string path, int nodeIndex);
+        void Draw(const Shader* s, glm::mat4& parentTransform);
     private:
         void ParseVertices(tinygltf::Model* model, tinygltf::Primitive& primitive);
         void ParseInidices(tinygltf::Accessor& accessor, tinygltf::Buffer& buffer, tinygltf::BufferView& bufView);
@@ -28,7 +32,10 @@ class Mesh{
 
         void Setup();
         void LoadTexture(tinygltf::Model* model, std::string modelPath, TexType textureType, int texFileID);
-        
+    
+        // Scene Data
+        glm::mat4 objSpaceTransform;
+        // Geometry Data
         std::vector<Texture*> textures;
         std::vector<VertexData> vertexData;
         std::vector<unsigned int> indices;

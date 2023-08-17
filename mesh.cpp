@@ -22,7 +22,7 @@ static std::vector<std::string> gltf_meshAttributes{
     "TANGENT",
 };
 
-Mesh::Mesh(tinygltf::Model* model, tinygltf::Primitive primitive, std::string path, int nodeIndex){
+Mesh::Mesh(tinygltf::Model* model, tinygltf::Primitive primitive, std::string path){
     tinygltf::Accessor& a = model->accessors[primitive.indices];
     tinygltf::BufferView& bufView = model->bufferViews[a.bufferView];
     tinygltf::Buffer& buf = model->buffers[bufView.buffer];
@@ -50,36 +50,6 @@ Mesh::Mesh(tinygltf::Model* model, tinygltf::Primitive primitive, std::string pa
     LoadTexture(model, path, TexType::Normal, normalFileID);
     LoadTexture(model, path, TexType::AO, aoFileID);
     LoadTexture(model, path, TexType::Emissive, emissiveFileID);
-    
-    glm::vec3 pos;
-    glm::vec3 rot;
-    glm::vec3 scale = { 1.f, 1.f, 1.f};
-    bool hasLocalTransform = false;
-    if (model -> nodes[nodeIndex].translation.size() > 0){
-        auto localPos = model->nodes[nodeIndex].translation;
-        pos = glm::vec3(localPos[0], localPos[1], localPos[2]);
-        hasLocalTransform = true;
-    }
-    if (model->nodes[nodeIndex].rotation.size() > 0 ){
-        auto localRot = model->nodes[nodeIndex].rotation;
-        rot = glm::vec3(localRot[0], localRot[1], localRot[2]);
-        hasLocalTransform = true;
-    }
-    if (model->nodes[nodeIndex].scale.size() > 0){
-        auto localScale = model->nodes[nodeIndex].scale;
-        scale = glm::vec3(localScale[0], localScale[1], localScale[2]);
-        hasLocalTransform = true;
-    }
-    objSpaceTransform = glm::mat4(1.0f);
-    if(!hasLocalTransform || true){
-        return;
-    }
-    objSpaceTransform = glm::translate(objSpaceTransform, pos);
-    objSpaceTransform = glm::rotate(objSpaceTransform, glm::radians(rot.x), RIGHT);
-    objSpaceTransform = glm::rotate(objSpaceTransform, glm::radians(rot.y), UP);
-    objSpaceTransform = glm::rotate(objSpaceTransform, glm::radians(rot.z), FORWARD);
-    objSpaceTransform = glm::scale(objSpaceTransform, scale);
-
 }
 
 void Mesh::LoadTexture(tinygltf::Model* m, std::string path, TexType tt, int texFileID){
@@ -97,10 +67,7 @@ void Mesh::LoadTexture(tinygltf::Model* m, std::string path, TexType tt, int tex
     textures.push_back(t);
 }
 
-void Mesh::Draw(const Shader* s, glm::mat4& parentTransform){
-    glm::mat4 worldSpaceTransform = parentTransform * objSpaceTransform;
-
-    s->SetMat4("MMatrix", worldSpaceTransform);
+void Mesh::Draw(const Shader* s){
     for (int i = 0; i < textures.size(); i++){
         textures[i]->Bind(s);
     }

@@ -9,6 +9,7 @@
 #include "geometry.h"
 #include "shaders.h"
 #include "textures.h"
+#include "model.h"
 
 Model::Model(const std::string& path){
     tinygltf::Model gltfM;
@@ -27,29 +28,85 @@ Model::Model(const std::string& path){
         std::cout << "[MODEL][LOAD][WARN] " << warn.c_str() << std::endl;
     }
 
+    for(auto rootID: gltfM.scenes[gltfM.defaultScene].nodes){
+        rootNodeIDs.push_back(rootID);
+    }
+
     for(int i=0; i< gltfM.meshes.size(); i++){
         for(int j=0; j< gltfM.meshes[i].primitives.size(); j++){
-            meshes.push_back(new Mesh(&gltfM, gltfM.meshes[i].primitives[j], path, i));
+            meshes.push_back(new Mesh(&gltfM, gltfM.meshes[i].primitives[j], path));
         }
+    }
+
+    nodes.resize(gltfM.nodes.size());
+    for (int i = 0; i < gltfM.nodes.size(); i++){
+        for (int childNodeID : gltfM.nodes[i].children){
+            nodes[i].childrenIDs.push_back(childNodeID);
+        }
+
+        nodes[i].meshID = gltfM.nodes[i].mesh;
+        auto n = gltfM.nodes[i];
+        glm::vec3 pos = glm::vec3(0.f);
+        glm::vec3 rot = glm::vec3(0.f);
+        glm::vec3 scale = { 1.f, 1.f, 1.f};
+        bool hasLocalTransform = false;
+        if (n.translation.size() > 0){
+            auto localPos = n.translation;
+            pos = glm::vec3(localPos[0], localPos[1], localPos[2]);
+            hasLocalTransform = true;
+        }
+        if (n.rotation.size() > 0 ){
+            auto localRot = n.rotation;
+            rot = glm::eulerAngles(glm::quat(localRot[3], localRot[0], localRot[1], localRot[2]));
+            hasLocalTransform = true;
+        }
+        if (n.scale.size() > 0){
+            auto localScale = n.scale;
+            scale = glm::vec3(localScale[0], localScale[1], localScale[2]);
+            hasLocalTransform = true;
+        }
+        if(!hasLocalTransform){
+            continue;
+        }
+        auto& osTransform = nodes[i].objectSpaceTransform;
+        osTransform = glm::translate(osTransform, pos);
+        osTransform = glm::rotate(osTransform, glm::radians(rot.x), RIGHT);
+        osTransform = glm::rotate(osTransform, glm::radians(rot.y), UP);
+        osTransform = glm::rotate(osTransform, glm::radians(rot.z), FORWARD);
+        osTransform = glm::scale(osTransform, scale);
     }
 }
 
-void Model::Draw(const Camera* camera, const Shader* shader){
-    glm::mat4 mMatrix(1.0f);
-    mMatrix = glm::translate(mMatrix, pos);
-
+glm::mat4 Model::UpdatedRootTransform(){
+    glm::mat4 r = glm::translate(glm::mat4(1.f), pos);
     glm::quat rotX = glm::angleAxis(glm::radians(rot.x), RIGHT);
     glm::quat rotY = glm::angleAxis(glm::radians(rot.y), UP);
     glm::quat rotZ = glm::angleAxis(glm::radians(rot.z), FORWARD);
     glm::mat4 rotQ = glm::mat4_cast( rotZ * rotY * rotX);
-    mMatrix = mMatrix * rotQ;
+    r = r * rotQ;
+    r = glm::scale(r, scale);
+    return r;
+}
 
-    mMatrix = glm::scale(mMatrix, scale);
-
-    for(size_t i =0; i < meshes.size(); i++){
-        meshes[i]->Draw(shader, mMatrix); 
+void Model::RootDraw(const Shader* s){
+    glm::mat4 baseTransform = UpdatedRootTransform();
+    s->SetInt("texFlag", shownTextureFlags);
+    assert(rootNodeIDs.size() > 0);
+    for( int nodeID : rootNodeIDs){
+        DrawNode(s, nodeID, baseTransform);
     }
-    shader->SetInt("texFlag", shownTextureFlags);
+}
+
+void Model::DrawNode(const Shader* shader, int nodeID, glm::mat4& parentTransform){
+    auto &node = nodes[nodeID];
+    glm::mat4 worldSpaceTransform =  node.objectSpaceTransform * parentTransform;
+    shader->SetMat4("MMatrix", worldSpaceTransform);
+    if(node.meshID > -1){ 
+        meshes[node.meshID]->Draw(shader);
+    }
+    for(auto childNodeID: node.childrenIDs){
+        DrawNode(shader, childNodeID, worldSpaceTransform);
+    }
 }
 
 void Model::HandleInput(GLFWwindow *w, float deltaTime, glm::vec2 mouseDelta){

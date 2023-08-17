@@ -21,24 +21,29 @@ class Model{
         void HandleInput(GLFWwindow *w, float deltaTime, glm::vec2 mouseDelta);
         
         // Render
-        void Draw(const Camera* camera, const Shader* shader);
-
+        void RootDraw(const Shader* s);
+        
         // Debug/UI
         void DrawDebugUI();
-
+        
     private: 
         // Scene
-        glm::mat4 MMatrix;
         glm::vec3 pos;
         glm::vec3 rot;
         glm::vec3 scale{1.0f,1.0f,1.0f};
         float rotationSpeed = 10.0f;
+        std::vector<unsigned int> rootNodeIDs;
 
+        glm::mat4 UpdatedRootTransform(); // This ideally will go away sooner or later, it's just to propagate the UI changes to the model, but there should not be a "base" transform and rather each root node should have its own.
+        
         // Textures
         unsigned int shownTextureFlags;
-
+        
         // Geometry
         std::vector<Mesh*> meshes;
         std::vector<Node> nodes;
+
+        // Render
+        void DrawNode(const Shader* shader, int nodeID, glm::mat4& parentTransform);
 
 };

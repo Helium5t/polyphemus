@@ -131,7 +131,7 @@ void Renderer::ProcessFrame(float deltaTimeMs, glm::vec2 mouseDelta){
 void Renderer::Render(){
     shader->Bind();
     shader->SetMat4("VPMatrix", camera->VPMatrix());
-    model->Draw(camera, shader);
+    model->RootDraw(shader);
 
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

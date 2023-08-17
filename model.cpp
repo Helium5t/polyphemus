@@ -77,23 +77,11 @@ Model::Model(const std::string& path){
     }
 }
 
-glm::mat4 Model::UpdatedRootTransform(){
-    glm::mat4 r = glm::translate(glm::mat4(1.f), pos);
-    glm::quat rotX = glm::angleAxis(glm::radians(rot.x), RIGHT);
-    glm::quat rotY = glm::angleAxis(glm::radians(rot.y), UP);
-    glm::quat rotZ = glm::angleAxis(glm::radians(rot.z), FORWARD);
-    glm::mat4 rotQ = glm::mat4_cast( rotZ * rotY * rotX);
-    r = r * rotQ;
-    r = glm::scale(r, scale);
-    return r;
-}
-
 void Model::RootDraw(const Shader* s){
-    glm::mat4 baseTransform = UpdatedRootTransform();
     s->SetInt("texFlag", shownTextureFlags);
     assert(rootNodeIDs.size() > 0);
     for( int nodeID : rootNodeIDs){
-        DrawNode(s, nodeID, baseTransform);
+        DrawNode(s, nodeID, t.GetWSMatrix());
     }
 }
 
@@ -118,17 +106,16 @@ bool Model::UseFallbackShader(){
 
 void Model::HandleInput(GLFWwindow *w, float deltaTime, glm::vec2 mouseDelta){
     if(glfwGetMouseButton(w, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS){
-        rot.x += mouseDelta[1] * deltaTime * rotationSpeed;
-        rot.y += mouseDelta[0] * deltaTime * rotationSpeed;
+        t.Rot.x += mouseDelta[1] * deltaTime * rotationSpeed;
+        t.Rot.y += mouseDelta[0] * deltaTime * rotationSpeed;
     }
 }
 
 void Model::DrawDebugUI(){
     ImGui::Begin("Model Debug");
-    ImGui::DragFloat3("Position", &pos[0], 0.01f);
-    // ImGui::DragFloat3("Rotation", &rot[0], 1.0f); // We now use input 
+    ImGui::DragFloat3("Position", &t.Pos[0], 0.01f);
     ImGui::DragFloat("Rotation Speed", &rotationSpeed, 0.1f, 0.01f);
-    ImGui::DragFloat3("Scale", &scale[0], 1.0f);
+    ImGui::DragFloat3("Scale", &t.Scale[0], 1.0f);
     if (ImGui::TreeNode("Textures"))
         {
             ImGui::CheckboxFlags("Show Albedo",   &shownTextureFlags, 1 << (unsigned) TexType::Albedo);

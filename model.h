@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <glm/glm.hpp>
+#include "transform.h"
 
 class Mesh;
 class Shader;
@@ -30,13 +31,9 @@ class Model{
         
     private: 
         // Scene
-        glm::vec3 pos;
-        glm::vec3 rot;
-        glm::vec3 scale{1.0f,1.0f,1.0f};
         float rotationSpeed = 10.0f;
         std::vector<unsigned int> rootNodeIDs;
-
-        glm::mat4 UpdatedRootTransform(); // This ideally will go away sooner or later, it's just to propagate the UI changes to the model, but there should not be a "base" transform and rather each root node should have its own.
+        Transform t;
         
         // Textures
         unsigned int shownTextureFlags;

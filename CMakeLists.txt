@@ -101,7 +101,8 @@ add_executable(
     model.cpp
     render.cpp
     shaders.cpp
-    camera.cpp)
+    camera.cpp
+    transform.cpp)
     
 target_link_libraries(polyphemus PRIVATE imgui glfw tinygltf glad nlohmann_json::nlohmann_json OpenGL::GL glm)
 

@@ -45,18 +45,19 @@ Mesh::Mesh(tinygltf::Model* model, tinygltf::Primitive primitive, std::string pa
     int aoFileID = model -> materials[primitive.material].occlusionTexture.index;
     int emissiveFileID = model -> materials[primitive.material].emissiveTexture.index;
 
-    LoadTexture(model, path, TexType::Albedo, albedoFileID);
-    LoadTexture(model, path, TexType::MR, mrFileID);
-    LoadTexture(model, path, TexType::Normal, normalFileID);
-    LoadTexture(model, path, TexType::AO, aoFileID);
-    LoadTexture(model, path, TexType::Emissive, emissiveFileID);
+    useFallbackShader = false;
+    useFallbackShader |= ! LoadTexture(model, path, TexType::Albedo, albedoFileID);
+    useFallbackShader |= ! LoadTexture(model, path, TexType::MR, mrFileID);
+    useFallbackShader |= ! LoadTexture(model, path, TexType::Normal, normalFileID);
+    useFallbackShader |= ! LoadTexture(model, path, TexType::AO, aoFileID);
+    LoadTexture(model, path, TexType::Emissive, emissiveFileID); // Not critical for rendering model
 }
 
-void Mesh::LoadTexture(tinygltf::Model* m, std::string path, TexType tt, int texFileID){
+bool Mesh::LoadTexture(tinygltf::Model* m, std::string path, TexType tt, int texFileID){
     Texture* t;
     if(texFileID == -1){
         std::cerr << "[MESH][WARN][LOAD_TEX] Requested texture (" << tex_name(tt) <<") is not present in model." << std::endl;
-        return;
+        return false;
     }
 
     int imgID = m->textures[texFileID].source;
@@ -65,6 +66,7 @@ void Mesh::LoadTexture(tinygltf::Model* m, std::string path, TexType tt, int tex
     std::string texPath = dir + texURI;
     t = new Texture(texPath, tt);
     textures.push_back(t);
+    return true;
 }
 
 void Mesh::Draw(const Shader* s){

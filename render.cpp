@@ -65,7 +65,6 @@ void Renderer::ShaderSetup(){
     shader = new Shader("hellotex.vert", 
                         "hellotex.frag",
                         fallback);
-    shader->SetUseFallback(true); // Temporary, should find a cleaner solution
 }
 
 void Renderer::SceneSetup(){
@@ -81,7 +80,11 @@ void Renderer::SceneSetup(){
 }
 
 void Renderer::ModelSetup(){
-    model = new Model("assets/models/cubes/BoxAnimated.gltf");
+    model = new Model("assets/models/helmet2/SciFiHelmet.gltf");
+    if(model->UseFallbackShader()){
+        std::cout << "[MODEL][INIT][WARN] Model does not support regular shader, using fallback shader." << std::endl;
+        shader->SetUseFallback(true);
+    }
 }
 
 void Renderer::Setup(){

@@ -24,14 +24,18 @@ struct VertexData{
 class Mesh{
     public:
         Mesh(tinygltf::Model* model, tinygltf::Primitive primitive, std::string path);
+        // Drawing
         void Draw(const Shader* s);
+        bool useFallbackShader;
     private:
         void ParseVertices(tinygltf::Model* model, tinygltf::Primitive& primitive);
         void ParseInidices(tinygltf::Accessor& accessor, tinygltf::Buffer& buffer, tinygltf::BufferView& bufView);
         void ParseData(tinygltf::Accessor& accessor, tinygltf::BufferView& bufView, tinygltf::Buffer& buffer, const std::string& type);
 
         void Setup();
-        void LoadTexture(tinygltf::Model* model, std::string modelPath, TexType textureType, int texFileID);
+
+        // UBOs
+        bool LoadTexture(tinygltf::Model* model, std::string modelPath, TexType textureType, int texFileID);
     
         // Geometry Data
         std::vector<Texture*> textures;
@@ -41,5 +45,4 @@ class Mesh{
         unsigned int indexCount;
         unsigned int vertBuffObj, vertArrObj, elemBuffObj;
 
-        bool useFallbackShader;
 };

@@ -109,6 +109,13 @@ void Model::DrawNode(const Shader* shader, int nodeID, glm::mat4& parentTransfor
     }
 }
 
+bool Model::UseFallbackShader(){
+    for(auto& m : meshes){
+        if(m->useFallbackShader) return true;
+    }
+    return false;
+}
+
 void Model::HandleInput(GLFWwindow *w, float deltaTime, glm::vec2 mouseDelta){
     if(glfwGetMouseButton(w, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS){
         rot.x += mouseDelta[1] * deltaTime * rotationSpeed;

@@ -25,6 +25,8 @@ class Model{
         
         // Debug/UI
         void DrawDebugUI();
+
+        bool UseFallbackShader();
         
     private: 
         // Scene

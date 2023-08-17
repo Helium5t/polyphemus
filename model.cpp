@@ -79,6 +79,7 @@ Model::Model(const std::string& path){
 
 void Model::RootDraw(const Shader* s){
     s->SetInt("texFlag", shownTextureFlags);
+    t.DrawDebugUI();
     assert(rootNodeIDs.size() > 0);
     for( int nodeID : rootNodeIDs){
         DrawNode(s, nodeID, t.GetWSMatrix());
@@ -112,19 +113,11 @@ void Model::HandleInput(GLFWwindow *w, float deltaTime, glm::vec2 mouseDelta){
 }
 
 void Model::DrawDebugUI(){
-    ImGui::Begin("Model Debug");
-    ImGui::DragFloat3("Position", &t.Pos[0], 0.01f);
-    ImGui::DragFloat("Rotation Speed", &rotationSpeed, 0.1f, 0.01f);
-    ImGui::DragFloat3("Scale", &t.Scale[0], 1.0f);
-    if (ImGui::TreeNode("Textures"))
-        {
-            ImGui::CheckboxFlags("Show Albedo",   &shownTextureFlags, 1 << (unsigned) TexType::Albedo);
-            ImGui::CheckboxFlags("Show Normal",   &shownTextureFlags, 1 << (unsigned) TexType::Normal);
-            ImGui::CheckboxFlags("Show MR",       &shownTextureFlags, 1 << (unsigned) TexType::MR);
-            ImGui::CheckboxFlags("Show AO",       &shownTextureFlags, 1 << (unsigned) TexType::AO);
-            ImGui::CheckboxFlags("Show Emissive",       &shownTextureFlags, 1 << (unsigned) TexType::Emissive);
-            ImGui::TreePop();
-            ImGui::Separator();
-        }
+    ImGui::Begin("Texture Selection");
+    ImGui::CheckboxFlags("Show Albedo",   &shownTextureFlags, 1 << (unsigned) TexType::Albedo);
+    ImGui::CheckboxFlags("Show Normal",   &shownTextureFlags, 1 << (unsigned) TexType::Normal);
+    ImGui::CheckboxFlags("Show MR",       &shownTextureFlags, 1 << (unsigned) TexType::MR);
+    ImGui::CheckboxFlags("Show AO",       &shownTextureFlags, 1 << (unsigned) TexType::AO);
+    ImGui::CheckboxFlags("Show Emissive",       &shownTextureFlags, 1 << (unsigned) TexType::Emissive);
     ImGui::End();
 }

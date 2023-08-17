@@ -29,6 +29,16 @@ static void setupImgui(GLFWwindow *w, const char *OGLVersion){
     ImGui::StyleColorsClassic();
     ImGui_ImplGlfw_InitForOpenGL(w, true);
     ImGui_ImplOpenGL3_Init(OGLVersion);
+
+    // Styling
+    ImGuiIO& io = ImGui::GetIO();
+    io.FontDefault = io.Fonts->AddFontFromFileTTF("assets/fonts/Roboto_Mono/static/RobotoMono-Medium.ttf", 15.5f);
+    io.Fonts->AddFontFromFileTTF("assets/fonts/Saira/static/Saira-Bold.ttf", 15.5f);
+
+    ImGuiStyle& style = ImGui::GetStyle();
+    style.FrameRounding = 2;
+    style.WindowRounding = 3;
+    style.WindowTitleAlign = ImVec2(0.5,0.5);
 }
 
 Renderer::Renderer(){

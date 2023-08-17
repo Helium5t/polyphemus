@@ -3,14 +3,13 @@
 #include <imgui_internal.h>
 
 #include "geometry.h"
+#include "fonts.h"
 #include "transform.h"
 
 #include <iostream>
 
 
-Transform::Transform(): Pos(glm::vec3(0.f)), Rot(glm::vec3(0.f)), Scale(glm::vec3(1.f)), wsMatrix(glm::mat4(1.f)){
-    std::cout << "init" << std::endl;
-};
+Transform::Transform(): Pos(glm::vec3(0.f)), Rot(glm::vec3(0.f)), Scale(glm::vec3(1.f)), wsMatrix(glm::mat4(1.f)){};
 
 void Transform::DrawDebugUI(){
     ImGuiIO& io = ImGui::GetIO();
@@ -74,12 +73,11 @@ void Transform::DrawVector3EditorUI(const std::string name, glm::vec3& data, flo
 {
     // From Cherno
 	ImGuiIO& io = ImGui::GetIO();
-	auto boldFont = io.Fonts->Fonts[1];
-
+	auto labelFont = io.Fonts->Fonts[LABEL];
 	ImGui::PushID(name.c_str());
 	ImGui::Columns(2);
 	ImGui::SetColumnWidth(0, 70.0f);
-	ImGui::Text(name.c_str());
+	ImGui::Text("%s", name.c_str());
 	ImGui::NextColumn();
 
 	ImGui::PushMultiItemsWidths(3, ImGui::CalcItemWidth());
@@ -92,7 +90,7 @@ void Transform::DrawVector3EditorUI(const std::string name, glm::vec3& data, flo
 	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.9f, 0.2f, 0.2f, 1.0f));
 	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.81f, 0.1f, 0.15f, 1.0f));
 
-	ImGui::PushFont(boldFont);
+	ImGui::PushFont(labelFont);
 	if (ImGui::Button("X", buttonSize))
 	{
 		data.x = resetValue;
@@ -110,7 +108,7 @@ void Transform::DrawVector3EditorUI(const std::string name, glm::vec3& data, flo
 	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.3f, 0.8f, 0.3f, 1.0f));
 	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.2f, 0.7f, 0.2f, 1.0f));
 
-	ImGui::PushFont(boldFont);
+	ImGui::PushFont(labelFont);
 	if (ImGui::Button("Y", buttonSize))
 	{
 		data.y = resetValue;
@@ -128,7 +126,7 @@ void Transform::DrawVector3EditorUI(const std::string name, glm::vec3& data, flo
 	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.2f, 0.35f, 0.9f, 1.0f));
 	ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.1f, 0.25f, 0.8f, 1.0f));
 
-	ImGui::PushFont(boldFont);
+	ImGui::PushFont(labelFont);
 	if (ImGui::Button("Z", buttonSize))
 	{
 		data.z = resetValue;

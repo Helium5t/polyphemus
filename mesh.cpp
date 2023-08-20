@@ -46,17 +46,21 @@ Mesh::Mesh(tinygltf::Model* model, tinygltf::Primitive primitive, std::string pa
     int emissiveFileID = model -> materials[primitive.material].emissiveTexture.index;
 
     useFallbackShader = false;
-    useFallbackShader |= ! LoadTexture(model, path, TexType::Albedo, albedoFileID);
-    useFallbackShader |= ! LoadTexture(model, path, TexType::MR, mrFileID);
-    useFallbackShader |= ! LoadTexture(model, path, TexType::Normal, normalFileID);
-    useFallbackShader |= ! LoadTexture(model, path, TexType::AO, aoFileID);
+    auto& baseCol = model->materials[primitive.material].pbrMetallicRoughness.baseColorFactor;
+    baseColor = glm::vec4(baseCol[0],baseCol[1],baseCol[2],baseCol[3]);
+    useFallbackShader |= ! LoadTexture(model, path, TexType::Albedo, albedoFileID, true);
+    useFallbackShader |= ! LoadTexture(model, path, TexType::MR, mrFileID, true);
+    useFallbackShader |= ! LoadTexture(model, path, TexType::Normal, normalFileID, true);
+    LoadTexture(model, path, TexType::AO, aoFileID);
     LoadTexture(model, path, TexType::Emissive, emissiveFileID); // Not critical for rendering model
 }
 
-bool Mesh::LoadTexture(tinygltf::Model* m, std::string path, TexType tt, int texFileID){
+bool Mesh::LoadTexture(tinygltf::Model* m, std::string path, TexType tt, int texFileID, bool emitWarning){
     Texture* t;
     if(texFileID == -1){
-        std::cerr << "[MESH][WARN][LOAD_TEX] Requested texture (" << tex_name(tt) <<") is not present in model." << std::endl;
+        if (emitWarning){
+            std::cerr << "[MESH][WARN][LOAD_TEX] Requested texture (" << tex_name(tt) <<") is not present in model. ("<< path << ")" << std::endl;
+        }
         return false;
     }
 
@@ -70,6 +74,7 @@ bool Mesh::LoadTexture(tinygltf::Model* m, std::string path, TexType tt, int tex
 }
 
 void Mesh::Draw(const Shader* s){
+    s->SetVec4("c_Base", baseColor);
     for (int i = 0; i < textures.size(); i++){
         textures[i]->Bind(s);
     }

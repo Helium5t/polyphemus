@@ -88,7 +88,7 @@ void Model::RootDraw(const Shader* s){
 
 void Model::DrawNode(const Shader* shader, int nodeID, glm::mat4& parentTransform){
     auto &node = nodes[nodeID];
-    glm::mat4 worldSpaceTransform =  node.objectSpaceTransform * parentTransform;
+    glm::mat4 worldSpaceTransform =  parentTransform * node.objectSpaceTransform; 
     shader->SetMat4("MMatrix", worldSpaceTransform);
     if(node.meshID > -1){ 
         meshes[node.meshID]->Draw(shader);

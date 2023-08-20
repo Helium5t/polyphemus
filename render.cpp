@@ -90,7 +90,7 @@ void Renderer::SceneSetup(){
 }
 
 void Renderer::ModelSetup(){
-    model = new Model("assets/models/helmet2/SciFiHelmet.gltf");
+    model = new Model("assets/models/chess/ABeautifulGame.gltf");
     if(model->UseFallbackShader()){
         std::cout << "[MODEL][INIT][WARN] Model does not support regular shader, using fallback shader." << std::endl;
         shader->SetUseFallback(true);

@@ -36,12 +36,13 @@ class Mesh{
         void Setup();
 
         // UBOs
-        bool LoadTexture(tinygltf::Model* model, std::string modelPath, TexType textureType, int texFileID);
+        bool LoadTexture(tinygltf::Model* model, std::string modelPath, TexType textureType, int texFileID, bool emitWarning = false);
     
         // Geometry Data
         std::vector<Texture*> textures;
         std::vector<VertexData> vertexData;
         std::vector<unsigned int> indices;
+        glm::vec4 baseColor;
 
         unsigned int indexCount;
         unsigned int vertBuffObj, vertArrObj, elemBuffObj;

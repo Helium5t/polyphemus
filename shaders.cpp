@@ -166,6 +166,15 @@ void Shader::SetVec3(const std::string& name, glm::vec3& vec) const
 	glUniform3f(glGetUniformLocation(shaderID, name.c_str()), vec.x, vec.y, vec.z);
 }
 
+void Shader::SetVec4(const std::string& name, glm::vec4& vec) const
+{
+    if(useFallback){
+        fallback->SetVec4(name, vec);
+        return;
+    }
+	glUniform4f(glGetUniformLocation(shaderID, name.c_str()), vec.x, vec.y, vec.z, vec.w);
+}
+
 void Shader::SetMat4(const std::string& name, glm::mat4& mat4) const
 {
     if(useFallback){

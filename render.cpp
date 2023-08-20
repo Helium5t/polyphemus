@@ -7,6 +7,7 @@
 #include <stb_image_write.h>
 #include "inputs.h"
 #include "render.h"
+#include "model.h"
 
 static void GLFWErrorCallback(int error, const char* desc){
     fprintf(stderr, "[GLFW][ERR] %d: %s\n", error, desc);
@@ -90,7 +91,7 @@ void Renderer::SceneSetup(){
 }
 
 void Renderer::ModelSetup(){
-    model = new GLTFModel("assets/models/chess/ABeautifulGame.gltf");
+    model = new Model("assets/models/chess/ABeautifulGame.gltf");
     if(model->UseFallbackShader()){
         std::cout << "[MODEL][INIT][WARN] Model does not support regular shader, using fallback shader." << std::endl;
         shader->SetUseFallback(true);

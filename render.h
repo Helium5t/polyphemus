@@ -11,6 +11,7 @@
 class Shader;
 class Camera;
 class GLTFModel;
+class Model;
 
 static void ResizeEvent(GLFWwindow *wd, int w, int h);
 
@@ -24,7 +25,7 @@ class Renderer{
     private:
 
         // Shading/Drawing
-        GLTFModel* model;
+        Model* model;
         Shader* shader;
 
         // Window/Engine

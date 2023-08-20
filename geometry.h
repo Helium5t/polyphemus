@@ -59,7 +59,7 @@ struct aiMesh;
 
 class Mesh{
     public:
-        Mesh(const aiMesh* m, const aiScene* s);
+        Mesh(const aiMesh* m);
 
         void Draw(Shader* s);
         bool useFallbackShader;

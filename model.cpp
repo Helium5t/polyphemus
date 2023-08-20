@@ -33,9 +33,11 @@ Model::Model(const std::string& path){
     }
 
     for(int i=0; i< gltfM.meshes.size(); i++){
+        std::vector<Mesh*> primitives;
         for(int j=0; j< gltfM.meshes[i].primitives.size(); j++){
-            meshes.push_back(new Mesh(&gltfM, gltfM.meshes[i].primitives[j], path));
+            primitives.push_back(new Mesh(&gltfM, gltfM.meshes[i].primitives[j], path));
         }
+        meshes.push_back(primitives);
     }
 
     nodes.resize(gltfM.nodes.size());
@@ -91,7 +93,9 @@ void Model::DrawNode(const Shader* shader, int nodeID, glm::mat4& parentTransfor
     glm::mat4 worldSpaceTransform =  parentTransform * node.objectSpaceTransform; 
     shader->SetMat4("MMatrix", worldSpaceTransform);
     if(node.meshID > -1){ 
-        meshes[node.meshID]->Draw(shader);
+        for (auto& primitive : meshes[node.meshID]){
+            primitive->Draw(shader);
+        }
     }
     for(auto childNodeID: node.childrenIDs){
         DrawNode(shader, childNodeID, worldSpaceTransform);
@@ -100,7 +104,9 @@ void Model::DrawNode(const Shader* shader, int nodeID, glm::mat4& parentTransfor
 
 bool Model::UseFallbackShader(){
     for(auto& m : meshes){
-        if(m->useFallbackShader) return true;
+        for (auto& p : m){
+            if(p->useFallbackShader) return true;
+        }
     }
     return false;
 }

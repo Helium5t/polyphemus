@@ -39,7 +39,11 @@ class Model{
         unsigned int shownTextureFlags;
         
         // Geometry
-        std::vector<Mesh*> meshes;
+        /*  
+            Ideally I would like to have a more nominal structure (a "Mesh" struct holding multiple "Primitive" instances (Primitive class is now called Mesh)
+            but the Mesh struct would end up just being something holding all the primitives and propagating calls at the moment without any added value.
+        */ 
+        std::vector<std::vector<Mesh*>> meshes; 
         std::vector<Node> nodes;
 
         // Render

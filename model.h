@@ -3,6 +3,8 @@
 #include <vector>
 #include <GLFW/glfw3.h>
 
+#include "transform.h"
+
 class Shader;
 class Mesh;
 
@@ -26,4 +28,13 @@ class Model{
         void ParseNode(aiNode* n, const aiScene* s);
         
         std::vector<Mesh*> meshes;
+
+        Transform t;
+
+        // Textures
+        unsigned int shownTextureFlags;
+
+        // Viewing
+        float rotationSpeed = 5.f;
+        
 };

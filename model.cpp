@@ -1,19 +1,22 @@
 #include <cassert>
 #include <iostream>
 
+#include <imgui.h>
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
 #include "geometry.h"
+#include "textures.h"
+#include "shaders.h"
 #include "model.h"
 
 Model::Model(const std::string& path){
     Assimp::Importer importer;
 
-    unsigned int assetProcessFlag = 0;
+    unsigned int assetProcessFlags = 0;
 
-    const aiScene* scene = importer.ReadFile(path, assetProcessFlag);
+    const aiScene* scene = importer.ReadFile(path, assetProcessFlags);
 
     if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode){
         std::cout << "[MODEL][LOAD][ERR] " << importer.GetErrorString() << std::endl;
@@ -25,7 +28,13 @@ Model::Model(const std::string& path){
 }
 
 void Model::RootDraw(Shader* s){
-    // TODO
+    s->SetInt("texFlag", shownTextureFlags);
+    // TODO: update transform
+    t.DrawDebugUI();
+    for(auto& m : meshes){
+        s->SetMat4("MMatrix", t.GetWSMatrix());
+        m->Draw(s);
+    }
 }
 
 bool Model::UseFallbackShader(){
@@ -33,16 +42,25 @@ bool Model::UseFallbackShader(){
 };
 
 void Model::HandleInput(GLFWwindow* w,float deltaTimeMs,glm::vec2 mouseDelta){
-    // TODO
+    if(glfwGetMouseButton(w, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS){
+        t.Rot.x += mouseDelta[1] * deltaTimeMs * rotationSpeed;
+        t.Rot.y += mouseDelta[0] * deltaTimeMs * rotationSpeed;
+    }
 };
+
 void Model::DrawDebugUI(){
-    // TODO
+    ImGui::Begin("Texture Selection");
+    ImGui::CheckboxFlags("Show Albedo",   &shownTextureFlags, 1 << (unsigned) TexType::Albedo);
+    ImGui::CheckboxFlags("Show Normal",   &shownTextureFlags, 1 << (unsigned) TexType::Normal);
+    ImGui::CheckboxFlags("Show MR",       &shownTextureFlags, 1 << (unsigned) TexType::MR);
+    ImGui::CheckboxFlags("Show AO",       &shownTextureFlags, 1 << (unsigned) TexType::AO);
+    ImGui::CheckboxFlags("Show Emissive",       &shownTextureFlags, 1 << (unsigned) TexType::Emissive);
+    ImGui::End();
 };
 
 void Model::ParseNode(aiNode* n, const aiScene* s){
     for(unsigned int i = 0; i < n->mNumMeshes; i++){
         aiMesh* meshData = s->mMeshes[n->mMeshes[i]];
-
         meshes.push_back(new Mesh(meshData));
     }
 

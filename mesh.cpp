@@ -1,12 +1,15 @@
 #include <glad/glad.h>
 #include <assimp/scene.h>
 
+#include <iostream>
 #include "shaders.h"
 #include "geometry.h"
 
 
 Mesh::Mesh(const aiMesh* m){
     vertexData.resize(m->mNumVertices);
+    baseColor = glm::vec4(0.f);
+
     for (unsigned int i = 0; i < m->mNumVertices; i++){
         auto& pos = m->mVertices[i];
         vertexData[i].position = glm::vec3(pos.x,pos.y, pos.z);
@@ -53,7 +56,7 @@ void Mesh::AllocateBindBuffers(){
     glBufferData(GL_ARRAY_BUFFER, vertexData.size() * sizeof(VertexData), &vertexData[0], GL_STATIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elemBuffObj);
-    glBufferData(GL_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
 
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void*) 0);

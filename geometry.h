@@ -22,9 +22,9 @@ struct VertexData{
 };
 
 
-class Mesh{
+class GLTFMesh{
     public:
-        Mesh(tinygltf::Model* model, tinygltf::Primitive primitive, std::string path);
+        GLTFMesh(tinygltf::Model* model, tinygltf::Primitive primitive, std::string path);
         // Drawing
         void Draw(const Shader* s);
         bool useFallbackShader;
@@ -47,4 +47,29 @@ class Mesh{
         unsigned int indexCount;
         unsigned int vertBuffObj, vertArrObj, elemBuffObj;
 
+};
+
+
+
+
+// Asset importer class
+
+struct aiScene;
+struct aiMesh;
+
+class Mesh{
+    public:
+        Mesh(const aiMesh* m, const aiScene* s);
+
+        void Draw(Shader* s);
+        bool useFallbackShader;
+    private:
+        void AllocateBindBuffers();
+
+        std::vector<VertexData> vertexData;
+        std::vector<unsigned int> indices;
+        glm::vec4 baseColor;
+
+        unsigned int indexCount = 0;
+        unsigned int vertBuffObj, vertArrObj, elemBuffObj;
 };

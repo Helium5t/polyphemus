@@ -3,8 +3,9 @@
 #include <vector>
 #include <glm/glm.hpp>
 #include "transform.h"
+#include <GLFW/glfw3.h>
 
-class Mesh;
+class GLTFMesh;
 class Shader;
 
 struct Node{
@@ -13,10 +14,10 @@ struct Node{
     glm::mat4 objectSpaceTransform = glm::mat4(1.f);
 };
 
-class Model{
+class GLTFModel{
     public:
-        Model() = delete;
-        Model(const std::string& path);
+        GLTFModel() = delete;
+        GLTFModel(const std::string& path);
 
         // Scene
         void HandleInput(GLFWwindow *w, float deltaTime, glm::vec2 mouseDelta);
@@ -40,10 +41,10 @@ class Model{
         
         // Geometry
         /*  
-            Ideally I would like to have a more nominal structure (a "Mesh" struct holding multiple "Primitive" instances (Primitive class is now called Mesh)
-            but the Mesh struct would end up just being something holding all the primitives and propagating calls at the moment without any added value.
+            Ideally I would like to have a more nominal structure (a "GLTFMesh" data structure holding multiple "Primitive" instances (Primitive class is now called GLTFMesh)
+            but the GLTFMesh would end up just being something holding all the primitives and propagating calls at the moment without any added value.
         */ 
-        std::vector<std::vector<Mesh*>> meshes; 
+        std::vector<std::vector<GLTFMesh*>> meshes; 
         std::vector<Node> nodes;
 
         // Render

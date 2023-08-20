@@ -22,7 +22,7 @@ static std::vector<std::string> gltf_meshAttributes{
     "TANGENT",
 };
 
-Mesh::Mesh(tinygltf::Model* model, tinygltf::Primitive primitive, std::string path){
+GLTFMesh::GLTFMesh(tinygltf::Model* model, tinygltf::Primitive primitive, std::string path){
     tinygltf::Accessor& a = model->accessors[primitive.indices];
     tinygltf::BufferView& bufView = model->bufferViews[a.bufferView];
     tinygltf::Buffer& buf = model->buffers[bufView.buffer];
@@ -55,7 +55,7 @@ Mesh::Mesh(tinygltf::Model* model, tinygltf::Primitive primitive, std::string pa
     LoadTexture(model, path, TexType::Emissive, emissiveFileID); // Not critical for rendering model
 }
 
-bool Mesh::LoadTexture(tinygltf::Model* m, std::string path, TexType tt, int texFileID, bool emitWarning){
+bool GLTFMesh::LoadTexture(tinygltf::Model* m, std::string path, TexType tt, int texFileID, bool emitWarning){
     Texture* t;
     if(texFileID == -1){
         if (emitWarning){
@@ -73,7 +73,7 @@ bool Mesh::LoadTexture(tinygltf::Model* m, std::string path, TexType tt, int tex
     return true;
 }
 
-void Mesh::Draw(const Shader* s){
+void GLTFMesh::Draw(const Shader* s){
     s->SetVec4("c_Base", baseColor);
     for (int i = 0; i < textures.size(); i++){
         textures[i]->Bind(s);
@@ -82,7 +82,7 @@ void Mesh::Draw(const Shader* s){
     glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
 }
 
-void Mesh::ParseVertices(tinygltf::Model* model, tinygltf::Primitive& primitive){
+void GLTFMesh::ParseVertices(tinygltf::Model* model, tinygltf::Primitive& primitive){
     for(int i = 0; i<gltf_meshAttributes.size(); i++){
         auto attr = primitive.attributes.find(gltf_meshAttributes[i]);
 
@@ -100,7 +100,7 @@ void Mesh::ParseVertices(tinygltf::Model* model, tinygltf::Primitive& primitive)
     }
 }
 
-void Mesh::ParseInidices(tinygltf::Accessor& accessor, tinygltf::Buffer& buffer, tinygltf::BufferView& bufView){
+void GLTFMesh::ParseInidices(tinygltf::Accessor& accessor, tinygltf::Buffer& buffer, tinygltf::BufferView& bufView){
     size_t start = bufView.byteOffset;
     size_t end = bufView.byteOffset + bufView.byteLength;
     unsigned int componentSize = tinygltf::GetComponentSizeInBytes(accessor.componentType);
@@ -120,7 +120,7 @@ void Mesh::ParseInidices(tinygltf::Accessor& accessor, tinygltf::Buffer& buffer,
     }
 }
 
-void Mesh::ParseData(tinygltf::Accessor& accessor, tinygltf::BufferView& bufView, tinygltf::Buffer& buffer, const std::string& type){
+void GLTFMesh::ParseData(tinygltf::Accessor& accessor, tinygltf::BufferView& bufView, tinygltf::Buffer& buffer, const std::string& type){
     int componentSize = tinygltf::GetComponentSizeInBytes(accessor.componentType);
     int stride = accessor.ByteStride(bufView);
     size_t offset = bufView.byteOffset + accessor.byteOffset;
@@ -149,7 +149,7 @@ void Mesh::ParseData(tinygltf::Accessor& accessor, tinygltf::BufferView& bufView
     }
 }
 
-void Mesh::Setup(){
+void GLTFMesh::Setup(){
     glGenBuffers(1, &vertBuffObj);
     glGenBuffers(1, &elemBuffObj);
     glGenVertexArrays(1, &vertArrObj);

@@ -9,9 +9,9 @@
 #include "geometry.h"
 #include "shaders.h"
 #include "textures.h"
-#include "model.h"
+#include "GLTFmodel.h"
 
-Model::Model(const std::string& path){
+GLTFModel::GLTFModel(const std::string& path){
     tinygltf::Model gltfM;
     tinygltf::TinyGLTF loader;
 
@@ -33,9 +33,9 @@ Model::Model(const std::string& path){
     }
 
     for(int i=0; i< gltfM.meshes.size(); i++){
-        std::vector<Mesh*> primitives;
+        std::vector<GLTFMesh*> primitives;
         for(int j=0; j< gltfM.meshes[i].primitives.size(); j++){
-            primitives.push_back(new Mesh(&gltfM, gltfM.meshes[i].primitives[j], path));
+            primitives.push_back(new GLTFMesh(&gltfM, gltfM.meshes[i].primitives[j], path));
         }
         meshes.push_back(primitives);
     }
@@ -79,7 +79,7 @@ Model::Model(const std::string& path){
     }
 }
 
-void Model::RootDraw(const Shader* s){
+void GLTFModel::RootDraw(const Shader* s){
     s->SetInt("texFlag", shownTextureFlags);
     t.DrawDebugUI();
     assert(rootNodeIDs.size() > 0);
@@ -88,7 +88,7 @@ void Model::RootDraw(const Shader* s){
     }
 }
 
-void Model::DrawNode(const Shader* shader, int nodeID, glm::mat4& parentTransform){
+void GLTFModel::DrawNode(const Shader* shader, int nodeID, glm::mat4& parentTransform){
     auto &node = nodes[nodeID];
     glm::mat4 worldSpaceTransform =  parentTransform * node.objectSpaceTransform; 
     shader->SetMat4("MMatrix", worldSpaceTransform);
@@ -102,7 +102,7 @@ void Model::DrawNode(const Shader* shader, int nodeID, glm::mat4& parentTransfor
     }
 }
 
-bool Model::UseFallbackShader(){
+bool GLTFModel::UseFallbackShader(){
     for(auto& m : meshes){
         for (auto& p : m){
             if(p->useFallbackShader) return true;
@@ -111,14 +111,14 @@ bool Model::UseFallbackShader(){
     return false;
 }
 
-void Model::HandleInput(GLFWwindow *w, float deltaTime, glm::vec2 mouseDelta){
+void GLTFModel::HandleInput(GLFWwindow *w, float deltaTime, glm::vec2 mouseDelta){
     if(glfwGetMouseButton(w, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS){
         t.Rot.x += mouseDelta[1] * deltaTime * rotationSpeed;
         t.Rot.y += mouseDelta[0] * deltaTime * rotationSpeed;
     }
 }
 
-void Model::DrawDebugUI(){
+void GLTFModel::DrawDebugUI(){
     ImGui::Begin("Texture Selection");
     ImGui::CheckboxFlags("Show Albedo",   &shownTextureFlags, 1 << (unsigned) TexType::Albedo);
     ImGui::CheckboxFlags("Show Normal",   &shownTextureFlags, 1 << (unsigned) TexType::Normal);

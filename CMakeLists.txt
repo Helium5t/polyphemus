@@ -75,6 +75,13 @@ CPMAddPackage(
     GIT_TAG v2.8.0
 )
 
+# Asset Importer 
+CPMAddPackage(
+    NAME assimp
+    GITHUB_REPOSITORY assimp/assimp
+    GIT_TAG v5.2.5
+)
+
 # GLM 
 CPMAddPackage("gh:g-truc/glm#0.9.9.8")
 
@@ -96,15 +103,17 @@ target_include_directories(stb_image
 add_executable(
     polyphemus 
     main.cpp
-    mesh.cpp
+    GLTFmesh.cpp
     textures.cpp
+    GLTFmodel.cpp
     model.cpp
+    mesh.cpp
     render.cpp
     shaders.cpp
     camera.cpp
     transform.cpp)
     
-target_link_libraries(polyphemus PRIVATE imgui glfw tinygltf glad nlohmann_json::nlohmann_json OpenGL::GL glm)
+target_link_libraries(polyphemus PRIVATE imgui glfw tinygltf glad nlohmann_json::nlohmann_json OpenGL::GL glm assimp)
 
 # To make it work on macOS
 target_link_libraries(polyphemus PRIVATE "-framework Cocoa" "-framework IOKit" "-framework CoreVideo")

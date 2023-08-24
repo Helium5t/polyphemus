@@ -46,13 +46,33 @@ void Camera::HandleInput(float deltaTime, GLFWwindow *w){
     if (glfwGetKey(w, DOWN_KEY) == GLFW_PRESS){
         pos -= speed * deltaTime * up;
     }
+    if (glfwGetKey(w, ROTATE_DOWN_KEY) == GLFW_PRESS){
+        glm::mat4 rotation = glm::rotate(glm::mat4(1.f), speed * deltaTime, glm::vec3(1.f,0.f, 0.f));
+        forward =  glm::vec3(rotation * glm::vec4(forward, 1.f));
+        up = glm::vec3(rotation * glm::vec4(up, 1.f));
+    }
+    if (glfwGetKey(w, ROTATE_UP_KEY) == GLFW_PRESS){
+        glm::mat4 rotation = glm::rotate(glm::mat4(1.f), -speed * deltaTime, glm::vec3(1.f,0.f, 0.f));
+        forward =  glm::vec3(rotation * glm::vec4(forward, 1.f));
+        up = glm::vec3(rotation * glm::vec4(up, 1.f));
+    }
+    if (glfwGetKey(w, ROTATE_LEFT_KEY) == GLFW_PRESS){
+        glm::mat4 rotation = glm::rotate(glm::mat4(1.f), speed * deltaTime, glm::vec3(0.f,1.f, 0.f));
+        forward =  glm::vec3(rotation * glm::vec4(forward, 1.f));
+        up = glm::vec3(rotation * glm::vec4(up, 1.f));
+    }
+    if (glfwGetKey(w, ROTATE_RIGHT_KEY) == GLFW_PRESS){
+        glm::mat4 rotation = glm::rotate(glm::mat4(1.f), -speed * deltaTime, glm::vec3(0.f,1.f, 0.f));
+        forward =  glm::vec3(rotation * glm::vec4(forward, 1.f));
+        up = glm::vec3(rotation * glm::vec4(up, 1.f));
+    }
 }
 
 void Camera::DrawDebugUI(){
     ImGui::Begin("Camera");
     // ImGui::DragFloat3("Position", &pos[0], 0.01f); // Commented out as we now use keyboard inputs 
     ImGui::DragFloat("Camera Speed", &speed,0.25f, 0.1f, 20.0f );
-    if (ImGui::SliderFloat("Field of View", &FOV, 10.0f, 90.0f)){
+    if (ImGui::SliderFloat("Field of View", &FOV, 10.0f, 120.0f)){
         projMatrix = glm::perspective(glm::radians(FOV), viewWidth/viewHeight, near, far);
     }
     ImGui::InputFloat("Near Clip", &near);

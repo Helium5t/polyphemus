@@ -21,20 +21,14 @@ Model::Model(const std::string& path){
     if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode){
         std::cout << "[MODEL][LOAD][ERR] " << importer.GetErrorString() << std::endl;
         throw std::runtime_error("[MODEL][LOAD][FAILURE] Failed to load model [" + path + "]:" + importer.GetErrorString());
-    }
-
-    ParseNode(scene->mRootNode, scene);
-
+    }  
+    rootID = ParseNode(scene->mRootNode, scene);
 }
 
 void Model::RootDraw(Shader* s){
     s->SetInt("texFlag", shownTextureFlags);
-    // TODO: update transform
     t.DrawDebugUI();
-    for(auto& m : meshes){
-        s->SetMat4("MMatrix", t.GetWSMatrix());
-        m->Draw(s);
-    }
+    DrawNode(s, rootID, t.GetWSMatrix());
 }
 
 bool Model::UseFallbackShader(){
@@ -58,13 +52,43 @@ void Model::DrawDebugUI(){
     ImGui::End();
 };
 
-void Model::ParseNode(aiNode* n, const aiScene* s){
-    for(unsigned int i = 0; i < n->mNumMeshes; i++){
-        aiMesh* meshData = s->mMeshes[n->mMeshes[i]];
-        meshes.push_back(new Mesh(meshData));
+int Model::ParseNode(aiNode* n, const aiScene* s){
+    Node node;
+    if(n->mNumMeshes > 0){
+        node.meshesCount = n->mNumMeshes;
+        node.meshes = meshes.size();
+        for(unsigned int i = 0; i < n->mNumMeshes; i++){
+            aiMesh* meshData = s->mMeshes[n->mMeshes[i]];
+            meshes.push_back(new Mesh(meshData));
+        }
     }
+    node.objectSpaceTransform = glm::mat4(  n->mTransformation.a1,n->mTransformation.b1,n->mTransformation.c1,n->mTransformation.d1,
+                                            n->mTransformation.a2,n->mTransformation.b2,n->mTransformation.c2,n->mTransformation.d2,
+                                            n->mTransformation.a3,n->mTransformation.b3,n->mTransformation.c3,n->mTransformation.d3,
+                                            n->mTransformation.a4,n->mTransformation.b4,n->mTransformation.c4,n->mTransformation.d4
+                                            );
+    
+    
+    if(n->mNumChildren > 0){
+        node.childrenIDs.resize(n->mNumChildren);
+        for(unsigned int i = 0; i < n->mNumChildren; i++){
+            node.childrenIDs[i]=ParseNode(n->mChildren[i], s);
+        }
+    }
+    int nodeID = nodes.size();
+    nodes.push_back(node);
+    return nodeID;
+}
 
-    for(unsigned int i = 0; i < n->mNumChildren; i++){
-        ParseNode(n->mChildren[i], s);
+void Model::DrawNode(Shader* s, int nodeID, glm::mat4& parentTransform){
+    Node n = nodes[nodeID];
+    glm::mat4 WSMatrix = parentTransform * n.objectSpaceTransform;
+    
+    s->SetMat4("MMatrix", WSMatrix);
+    for(int i =0; i < n.meshesCount; i++){
+        meshes[n.meshes + i]->Draw(s);
+    }
+    for (auto childID : n.childrenIDs){
+        DrawNode(s, childID, WSMatrix);
     }
 }

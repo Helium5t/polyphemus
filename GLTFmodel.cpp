@@ -6,6 +6,7 @@
 #include <glm/gtx/euler_angles.hpp>
 #include <GLFW/glfw3.h>
 #include "geometry.h"
+#include "GLTFgeometry.h"
 #include "shaders.h"
 #include "textures.h"
 #include "GLTFmodel.h"

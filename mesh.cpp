@@ -16,9 +16,13 @@ Mesh::Mesh(const aiMesh* m){
         
         auto& n = m->mNormals[i];
         vertexData[i].normal = glm::vec3(n.x,n.y,n.z);
-
-        auto& uv = m->mTextureCoords[0][i];
-        vertexData[i].texCoord = glm::vec3(uv.x,uv.y, 0.f);
+        
+        if(m->HasTextureCoords(0)){
+            auto& uv = m->mTextureCoords[0][i];
+            vertexData[i].texCoord = glm::vec3(uv.x,uv.y, 0.f);
+        }else{
+            vertexData[i].texCoord = glm::vec3(0.f);
+        }
 
         if(!m->mTangents){
             continue;

@@ -1,6 +1,7 @@
 #include <cassert>
 #include <iostream>
 #include <glad/glad.h>
+#include "GLTFgeometry.h"
 #include "geometry.h"
 #include "textures.h"
 #include "shaders.h"

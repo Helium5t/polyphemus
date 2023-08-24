@@ -6,11 +6,10 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 #include "shaders.h"
-#include "scene.h"
+#include "camera.h"
 
 class Shader;
 class Camera;
-class GLTFModel;
 class Model;
 
 static void ResizeEvent(GLFWwindow *wd, int w, int h);

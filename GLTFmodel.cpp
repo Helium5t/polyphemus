@@ -5,7 +5,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/euler_angles.hpp>
 #include <GLFW/glfw3.h>
-#include "scene.h"
 #include "geometry.h"
 #include "shaders.h"
 #include "textures.h"

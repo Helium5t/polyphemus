@@ -4,6 +4,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 project(polyphemus)
 
+# DO NOT COMMIT
+add_compile_options(-Wno-deprecated-declarations)
+
 include(cmake/CPM.cmake)
 
 ####### DEPENDENCIES #######
@@ -67,13 +70,13 @@ target_include_directories(glad PUBLIC ${GLAD_DIR})
 
 CPMAddPackage("gh:nlohmann/json#v3.11.2")
 
-# GLTF Parser
+# GLTF Parser (Deprecated in favor of asset importer)
 
-CPMAddPackage(
-    NAME tinygltf
-    GITHUB_REPOSITORY syoyo/tinygltf
-    GIT_TAG v2.8.0
-)
+# CPMAddPackage(
+#     NAME tinygltf
+#     GITHUB_REPOSITORY syoyo/tinygltf
+#     GIT_TAG v2.8.0
+# )
 
 # Asset Importer 
 CPMAddPackage(
@@ -90,22 +93,19 @@ CPMAddPackage("gh:g-truc/glm#0.9.9.8")
 set(STB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/deps/stb_image)
 set(
     STB_HEADERS
-    deps/stb_image/stb_image_write.h
-    deps/stb_image/stb_image.h
+    ${STB_DIR}/stb_image_write.h
+    ${STB_DIR}/stb_image.h
 )
 add_library(stb_image INTERFACE)          
 target_include_directories(stb_image
     INTERFACE
-    ${STB_HEADERS}
+    ${STB_DIR}
 )
 
 ####### END DEPENDENCIES #######
 add_executable(
     polyphemus 
     main.cpp
-    GLTFmesh.cpp
-    textures.cpp
-    GLTFmodel.cpp
     model.cpp
     mesh.cpp
     render.cpp
@@ -113,7 +113,7 @@ add_executable(
     camera.cpp
     transform.cpp)
     
-target_link_libraries(polyphemus PRIVATE imgui glfw tinygltf glad nlohmann_json::nlohmann_json OpenGL::GL glm assimp)
+target_link_libraries(polyphemus PRIVATE stb_image imgui glfw glad nlohmann_json::nlohmann_json OpenGL::GL glm assimp)
 
 # To make it work on macOS
 target_link_libraries(polyphemus PRIVATE "-framework Cocoa" "-framework IOKit" "-framework CoreVideo")

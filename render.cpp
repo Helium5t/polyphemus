@@ -1,3 +1,5 @@
+#include "render.h"
+
 #include <iostream>
 #include <chrono>
 #include <ctime>
@@ -9,7 +11,7 @@
 #include <stb_image.h>
 #include <stb_image_write.h>
 #include "inputs.h"
-#include "render.h"
+#include "scenePicker.h"
 #include "model.h"
 
 static void GLFWErrorCallback(int error, const char* desc){
@@ -71,17 +73,9 @@ Renderer::Renderer(){
     setupImgui(glfwWindow, "#version 410");
 }
 
-void Renderer::ShaderSetup(){
-    Shader* fallback = new Shader(
-        "fallback.vert",
-        "fallback.frag"
-    );
-    shader = new Shader("hellotex.vert", 
-                        "hellotex.frag",
-                        fallback);
-}
 
 void Renderer::SceneSetup(){
+    scenePicker = new ScenePicker();
     // Camera is facing -Z, Y-Up
     camera = new Camera(glm::vec3(0.0f, 0.0f, 5.0f), glm::vec3(0.0f,0.0f,-1.0f), glm::vec3(0.0f, 1.0f, 0.0f), screenW, screenH);
 
@@ -93,17 +87,7 @@ void Renderer::SceneSetup(){
     glfwSetFramebufferSizeCallback(glfwWindow, ResizeEvent);
 }
 
-void Renderer::ModelSetup(){
-    model = new Model("assets/models/chess/ABeautifulGame.gltf");
-    if(model->UseFallbackShader()){
-        std::cout << "[MODEL][INIT][WARN] Model does not support regular shader, using fallback shader." << std::endl;
-        shader->SetUseFallback(true);
-    }
-}
-
 void Renderer::Setup(){
-    ShaderSetup();
-    ModelSetup();
     SceneSetup();
 
     glEnable(GL_DEPTH_TEST); 
@@ -141,14 +125,11 @@ void Renderer::ProcessFrame(float deltaTimeMs, glm::vec2 mouseDelta){
 
     camera->Update(deltaTimeMs, glfwWindow);
     camera->DrawDebugUI();
-    model-> HandleInput(glfwWindow, deltaTimeMs, mouseDelta);
-    model->DrawDebugUI();
+    scenePicker->Update(glfwWindow, deltaTimeMs, mouseDelta);
 }
 
 void Renderer::Render(){
-    shader->Bind();
-    shader->SetMat4("VPMatrix", camera->VPMatrix());
-    model->RootDraw(shader);
+    scenePicker->Draw(camera);
 
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

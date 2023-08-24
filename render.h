@@ -11,6 +11,7 @@
 class Shader;
 class Camera;
 class Model;
+class ScenePicker;
 
 static void ResizeEvent(GLFWwindow *wd, int w, int h);
 
@@ -23,10 +24,9 @@ class Renderer{
         void Launch();
     private:
 
-        // Shading/Drawing
-        Model* model;
-        Shader* shader;
-
+        // Scene Management
+        ScenePicker* scenePicker;
+        
         // Window/Engine
         bool running = true;
         GLFWwindow* glfwWindow;
@@ -39,9 +39,7 @@ class Renderer{
         Camera* camera;
 
         // Core functionalities
-        void ShaderSetup();
         void SceneSetup();
-        void ModelSetup();
         void Setup();
         void Update();
         void PreFrame();

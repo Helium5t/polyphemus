@@ -13,6 +13,7 @@ ChessScene::ChessScene(){
     for (auto m : models){
         if(m->UseFallbackShader()){
             std::cout << "[MODEL][INIT][WARN] Model does not support regular shader, using fallback shader." << std::endl;
+            shader->SetUseFallback(true);
         }
     }
 }

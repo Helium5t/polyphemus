@@ -27,6 +27,8 @@ Model::Model(const std::string& path){
 
 void Model::RootDraw(Shader* s){
     s->SetInt("texFlag", shownTextureFlags);
+    glm::vec4 bC = glm::vec4(baseColor, 1.f);
+    s->SetVec4("c_Base", bC);
     t.DrawDebugUI();
     DrawNode(s, rootID, t.GetWSMatrix());
 }
@@ -43,12 +45,15 @@ void Model::HandleInput(GLFWwindow* w,float deltaTimeMs,glm::vec2 mouseDelta){
 };
 
 void Model::DrawDebugUI(){
-    ImGui::Begin("Texture Selection");
+    ImGui::Begin("Model View");
     ImGui::CheckboxFlags("Show Albedo",   &shownTextureFlags, 1 << (unsigned) TexType::Albedo);
     ImGui::CheckboxFlags("Show Normal",   &shownTextureFlags, 1 << (unsigned) TexType::Normal);
     ImGui::CheckboxFlags("Show MR",       &shownTextureFlags, 1 << (unsigned) TexType::MR);
     ImGui::CheckboxFlags("Show AO",       &shownTextureFlags, 1 << (unsigned) TexType::AO);
     ImGui::CheckboxFlags("Show Emissive",       &shownTextureFlags, 1 << (unsigned) TexType::Emissive);
+    ImGui::BeginChild("Color", ImVec2(400,0));
+    ImGui::ColorPicker3("Base Color", &baseColor[0]);
+    ImGui::EndChild();
     ImGui::End();
 };
 

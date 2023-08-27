@@ -43,10 +43,9 @@ class Model{
 
         Transform t;
 
-        // Textures
-        unsigned int shownTextureFlags;
-
         // Viewing
         float rotationSpeed = 5.f;
+        unsigned int shownTextureFlags;
+        glm::vec3 baseColor;
         
 };

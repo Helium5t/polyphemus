@@ -37,7 +37,6 @@ class Mesh{
 
         std::vector<VertexData> vertexData;
         std::vector<unsigned int> indices;
-        glm::vec4 baseColor;
 
         unsigned int indexCount = 0;
         unsigned int vertBuffObj, vertArrObj, elemBuffObj;

@@ -8,8 +8,6 @@
 
 Mesh::Mesh(const aiMesh* m){
     vertexData.resize(m->mNumVertices);
-    baseColor = glm::vec4(0.f);
-
     for (unsigned int i = 0; i < m->mNumVertices; i++){
         auto& pos = m->mVertices[i];
         vertexData[i].position = glm::vec3(pos.x,pos.y, pos.z);
@@ -48,7 +46,6 @@ Mesh::Mesh(const aiMesh* m){
 }
 
 void Mesh::Draw(Shader* s){
-    s->SetVec4("c_Base", baseColor);
     glBindVertexArray(vertArrObj);
     glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
 }

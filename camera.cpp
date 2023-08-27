@@ -47,12 +47,12 @@ void Camera::HandleInput(float deltaTime, GLFWwindow *w){
         pos -= speed * deltaTime * up;
     }
     if (glfwGetKey(w, ROTATE_DOWN_KEY) == GLFW_PRESS){
-        glm::mat4 rotation = glm::rotate(glm::mat4(1.f), speed * deltaTime, glm::vec3(1.f,0.f, 0.f));
+        glm::mat4 rotation = glm::rotate(glm::mat4(1.f), speed * deltaTime, right);
         forward =  glm::vec3(rotation * glm::vec4(forward, 1.f));
         up = glm::vec3(rotation * glm::vec4(up, 1.f));
     }
     if (glfwGetKey(w, ROTATE_UP_KEY) == GLFW_PRESS){
-        glm::mat4 rotation = glm::rotate(glm::mat4(1.f), -speed * deltaTime, glm::vec3(1.f,0.f, 0.f));
+        glm::mat4 rotation = glm::rotate(glm::mat4(1.f), -speed * deltaTime, right);
         forward =  glm::vec3(rotation * glm::vec4(forward, 1.f));
         up = glm::vec3(rotation * glm::vec4(up, 1.f));
     }
@@ -60,11 +60,13 @@ void Camera::HandleInput(float deltaTime, GLFWwindow *w){
         glm::mat4 rotation = glm::rotate(glm::mat4(1.f), speed * deltaTime, glm::vec3(0.f,1.f, 0.f));
         forward =  glm::vec3(rotation * glm::vec4(forward, 1.f));
         up = glm::vec3(rotation * glm::vec4(up, 1.f));
+        right = glm::normalize(glm::cross(forward, up));
     }
     if (glfwGetKey(w, ROTATE_RIGHT_KEY) == GLFW_PRESS){
         glm::mat4 rotation = glm::rotate(glm::mat4(1.f), -speed * deltaTime, glm::vec3(0.f,1.f, 0.f));
         forward =  glm::vec3(rotation * glm::vec4(forward, 1.f));
         up = glm::vec3(rotation * glm::vec4(up, 1.f));
+        right = glm::normalize(glm::cross(forward, up));
     }
 }
 

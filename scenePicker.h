@@ -13,9 +13,18 @@ class ScenePicker{
         void Draw(Camera* c);
     
     private:
+        // Resource Management
+        void FindModels(std::string path, int skipChars, Assimp::Importer& importer);
+
+        std::vector<std::string> modelPaths;
+
+        // UI
         void DrawResetUI();
         void DrawSelectUI();
+        void DrawSelectModelUI();
+        void ResetUIState();
 
+        // Scene Management
         Scene* activeScene = nullptr;
         std::vector<Scene *> availableScenes;
 

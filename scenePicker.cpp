@@ -1,17 +1,43 @@
 #include <iostream>
 #include <imgui.h>
+#include <filesystem>
+#include <assimp/Importer.hpp>
 #include "chessScene.h"
 #include "scenePicker.h"
 
 ScenePicker::ScenePicker(){
     availableScenes.push_back(new ChessScene());
+    Assimp::Importer i;
+    FindModels(MODEL_DIRECTORY, strlen(MODEL_DIRECTORY), i);
+}
+
+void ScenePicker::FindModels(std::string path, int skipChars, Assimp::Importer& importer){
+    for(const auto& element : std::filesystem::directory_iterator(path)){
+        std::string pathString = element.path().string();
+        if(element.is_directory()){
+            FindModels(pathString, path.size() + 1, importer);
+            continue;
+        }; 
+        pathString.erase(0, skipChars);
+        std::string ext = strrchr(pathString.c_str(), '.');
+        if(!importer.IsExtensionSupported(ext)){
+            continue;
+        }
+        modelPaths.push_back(element.path().string());
+    }
+}
+
+void ScenePicker::ResetUIState(){
+    activeScene = nullptr;
+    genericModelOpen = false;
+    selectionOpen = false;
 }
 
 void ScenePicker::DrawResetUI(){
     ImGui::BeginMainMenuBar();
 
     if(ImGui::Button("New Scene")){
-        activeScene = nullptr;
+        ResetUIState();
     }
     ImGui::EndMainMenuBar();
 }

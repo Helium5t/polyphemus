@@ -3,6 +3,7 @@
 #include <filesystem>
 #include <assimp/Importer.hpp>
 #include "chessScene.h"
+#include "genericModelScene.h"
 #include "scenePicker.h"
 
 ScenePicker::ScenePicker(){
@@ -51,10 +52,47 @@ void ScenePicker::DrawSelectUI(){
     if(ImGui::BeginPopupModal("Scene Selection", &selectionOpen, ImGuiWindowFlags_Modal | ImGuiWindowFlags_Popup)){
         ImGui::Text("Available Scenes:");
         
-        if(ImGui::Button("Chess")){
+        if(ImGui::Button("Default Chess")){
             activeScene = availableScenes[0];
             ImGui::CloseCurrentPopup();
             selectionOpen = false;
+        }
+        if(ImGui::Button("Generic Model Loader")){
+            ImGui::CloseCurrentPopup();
+            selectionOpen = false;
+            genericModelOpen = true;
+        }
+        ImGui::EndPopup();
+    }
+
+    if(genericModelOpen){
+        DrawSelectModelUI();
+    }
+}
+
+void ScenePicker::DrawSelectModelUI(){
+    ImGui::OpenPopup("Model Selection");
+    if (ImGui::BeginPopupModal("Model Selection", &genericModelOpen,  ImGuiWindowFlags_Modal | ImGuiWindowFlags_Popup)){
+        ImGui::Text("Available models");
+
+        if(ImGui::BeginCombo("Models found", strrchr(modelPaths[activeModel].c_str(),'/'))){
+            for(int i = 0; i < modelPaths.size(); i++){
+                bool isActive = i == activeModel;
+                if(ImGui::Selectable(strrchr(modelPaths[i].c_str(), '/'), isActive)){
+                    activeModel = i;
+                }
+                if(isActive){
+                    ImGui::SetItemDefaultFocus();
+                }
+            }
+            ImGui::EndCombo();
+        }
+        
+        if(ImGui::Button("Load Model")){
+            std::string fullPath = modelPaths[activeModel];
+            activeScene = new GenericModelScene(fullPath);
+            genericModelOpen = false;
+            ImGui::CloseCurrentPopup();
         }
         ImGui::EndPopup();
     }

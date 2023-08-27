@@ -2,7 +2,11 @@
 #include <vector>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
+#include <assimp/Importer.hpp>
+
 #include "scene.h"
+
+#define MODEL_DIRECTORY "assets/models"
 
 class Camera;
 
@@ -28,5 +32,9 @@ class ScenePicker{
         Scene* activeScene = nullptr;
         std::vector<Scene *> availableScenes;
 
+        // Model management (for generic model loading)
+        unsigned int activeModel = 0;
+
         bool selectionOpen;
+        bool genericModelOpen;
 };

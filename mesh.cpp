@@ -24,12 +24,15 @@ Mesh::Mesh(const aiMesh* m){
             vertexData[i].texCoord = glm::vec3(0.f);
         }
 
-        if(!m->mTangents){
-            continue;
+        if(m->HasTangentsAndBitangents()){   
+            auto& tan = m->mTangents[i];
+            vertexData[i].tan = glm::vec3(tan.x,tan.y,tan.z);
         }
 
-        auto& tan = m->mTangents[i];
-        vertexData[i].tan = glm::vec3(tan.x,tan.y,tan.z);
+        if(m->HasVertexColors(0)){
+            auto& col = m->mColors[0][i];
+            vertexData[i].vCol = glm::vec4(col.r, col.g, col.b, col.a);
+        }
     }
 
     for (unsigned int i=0; i < m->mNumFaces; i++){
@@ -65,11 +68,13 @@ void Mesh::AllocateBindBuffers(){
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void*) 0);
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void*)(sizeof(float) * 3));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void*) (sizeof(float) * 3));
     glEnableVertexAttribArray(2);
     glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void*) (sizeof(float) * 6));
     glEnableVertexAttribArray(3);
     glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void*) (sizeof(float) * 8));
+    glEnableVertexAttribArray(4);
+    glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void*) (sizeof(float) * 11));
     
     glBindVertexArray(0);
 }

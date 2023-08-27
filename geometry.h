@@ -18,6 +18,7 @@ struct VertexData{
     glm::vec3 normal;
     glm::vec3 texCoord;
     glm::vec3 tan;
+    glm::vec4 vCol;
 };
 
 // Asset importer class

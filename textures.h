@@ -36,7 +36,7 @@ static std::string tex_name(TexType tt){
 class Texture{
 
     public:
-        Texture(std::string& path, TexType t);
+        Texture(std::string& path, TexType t, bool sRGB = false);
         void Bind(const Shader* shader);
     private:
         TexType type;

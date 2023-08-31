@@ -7,7 +7,7 @@
 
 
 
-Texture::Texture(std::string& path, TexType t){
+Texture::Texture(std::string& path, TexType t, bool sRGB = false){
     this->type = t;
     buf = stbi_load(path.c_str(), &width, &height, &channelCount, 0);
     assert(buf != nullptr);
@@ -20,7 +20,10 @@ Texture::Texture(std::string& path, TexType t){
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    unsigned int f = channelCount == 3 ? GL_RGB : GL_RGBA;
+
+    unsigned int f = channelCount == 3 ? 
+            (sRGB? GL_SRGB: GL_RGB) : 
+            (sRGB? GL_SRGB_ALPHA: GL_RGBA);
 
     glTexImage2D(GL_TEXTURE_2D, 0, f, width, height, 0, f, GL_UNSIGNED_BYTE, buf);
     glGenerateMipmap(GL_TEXTURE_2D);

@@ -125,6 +125,7 @@ void Renderer::ProcessFrame(float deltaTimeMs, glm::vec2 mouseDelta){
 
     camera->Update(deltaTimeMs, glfwWindow);
     camera->DrawDebugUI();
+    scenePicker->DrawSceneUI();
     scenePicker->Update(glfwWindow, deltaTimeMs, mouseDelta);
 }
 

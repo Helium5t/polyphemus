@@ -18,6 +18,8 @@ ChessScene::ChessScene(){
     }
 }
 
+void ChessScene::DrawUI(){/* No specific UI so no point in spending the call time to draw UI here */}
+
 void ChessScene::Update(GLFWwindow* w,float deltaTimeMs,glm::vec2 mouseDelta){
     for(auto m : models){
         m->HandleInput(w, deltaTimeMs, mouseDelta);

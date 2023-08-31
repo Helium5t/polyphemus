@@ -34,7 +34,7 @@ void Model::RootDraw(Shader* s){
 }
 
 bool Model::UseFallbackShader(){
-    return true;
+    return false;
 };
 
 void Model::HandleInput(GLFWwindow* w,float deltaTimeMs,glm::vec2 mouseDelta){

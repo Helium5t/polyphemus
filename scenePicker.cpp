@@ -98,6 +98,12 @@ void ScenePicker::DrawSelectModelUI(){
     }
 }
 
+void ScenePicker::DrawSceneUI(){
+    if(activeScene){
+        activeScene->DrawUI();
+    }
+}
+
 void ScenePicker::Update(GLFWwindow *w, float deltaTimeMs, glm::vec2 mouseDelta){
     if(activeScene){
         activeScene->Update(w, deltaTimeMs, mouseDelta);

@@ -9,5 +9,13 @@ class GenericModelScene : public Scene {
 
         virtual void Update(GLFWwindow* w,float deltaTimeMs,glm::vec2 mouseDelta) override;
         virtual void Draw(Camera* c) override;
+        virtual void DrawUI() override;
 
+    private:
+	    glm::vec3 albedo = glm::vec3(1.f);
+	    float metallic =  .5f;
+	    float roughness = .5f;
+
+        glm::vec3 lightPosition;
+        glm::vec3 lightColor;
 };

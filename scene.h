@@ -11,6 +11,7 @@ class Scene{
     public:
         virtual void Update(GLFWwindow* w,float deltaTimeMs,glm::vec2 mouseDelta) = 0;
         virtual void Draw(Camera* c);
+        virtual void DrawUI() = 0;
 
     protected:
         std::vector<Model*> models;

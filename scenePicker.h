@@ -15,6 +15,7 @@ class ScenePicker{
         ScenePicker();
         void Update(GLFWwindow* w,float deltaTimeMs, glm::vec2 mouseDelta);
         void Draw(Camera* c);
+        void DrawSceneUI();
     
     private:
         // Resource Management

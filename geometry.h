@@ -37,7 +37,7 @@ class Mesh{
         bool useFallbackShader;
     private:
         void AllocateBindBuffers();
-        void LoadTexture(const aiMaterial* m, TexType tt);
+        void LoadTexture(const aiMaterial* m, TexType tt, bool warnOnFailure = true);
         void LoadMaterialData(const aiMesh* m, const aiScene* s);
 
         std::string fsPath;

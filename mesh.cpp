@@ -98,11 +98,11 @@ void Mesh::LoadMaterialData(const aiMesh* m, const aiScene* s){
     LoadTexture(mat, TexType::Albedo);
     LoadTexture(mat, TexType::MR);
     LoadTexture(mat, TexType::Normal);
-    LoadTexture(mat, TexType::AO);
-    LoadTexture(mat, TexType::Emissive);
+    LoadTexture(mat, TexType::AO, false);
+    LoadTexture(mat, TexType::Emissive, false);
 }
 
-void Mesh::LoadTexture(const aiMaterial* m, TexType tt){
+void Mesh::LoadTexture(const aiMaterial* m, TexType tt, bool warnOnFailure){
     aiTextureType aiTT;
     bool srgb = false;
     switch (tt){
@@ -132,7 +132,7 @@ void Mesh::LoadTexture(const aiMaterial* m, TexType tt){
         std::string assetPath = assetDirectory + "/" + assetFileName.C_Str();
         Texture* t = new Texture(assetPath, tt, srgb);
         textures.push_back(t);
-    }else{
+    }else if(warnOnFailure){
         std::cerr << "[MESH][TEXTURE][LOAD][WARN] Requested texture (" << tex_name(tt) <<") is not present in model. ("<< fsPath << ")" << std::endl;
     }
 }

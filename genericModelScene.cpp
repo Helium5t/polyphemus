@@ -7,7 +7,7 @@
 
 GenericModelScene::GenericModelScene(std::string modelPath){
     Shader* fallback = new Shader("fallback.vert", "fallback.frag");
-    shader = new Shader("helloPBR.vert","helloPBR.frag",fallback);
+    shader = new Shader("helloPBR.vert","texPBR.frag",fallback);
 
     models.push_back(new Model(modelPath.c_str()));
     for (auto m : models){

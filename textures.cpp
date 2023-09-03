@@ -20,12 +20,17 @@ Texture::Texture(std::string& path, TexType t, bool sRGB){
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
+    unsigned int layout;
+    unsigned int f; 
+    if(channelCount  ==3){
+        layout = GL_RGB;
+        f = sRGB? GL_SRGB: GL_RGB;
+    }else{
+        layout = GL_RGBA;
+        f = sRGB? GL_SRGB_ALPHA: GL_RGBA;
+    }
 
-    unsigned int f = channelCount == 3 ? 
-            (sRGB? GL_SRGB: GL_RGB) : 
-            (sRGB? GL_SRGB_ALPHA: GL_RGBA);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, f, width, height, 0, f, GL_UNSIGNED_BYTE, buf);
+    glTexImage2D(GL_TEXTURE_2D, 0, f, width, height, 0, layout, GL_UNSIGNED_BYTE, buf);
     glGenerateMipmap(GL_TEXTURE_2D);
 
     stbi_image_free(buf);

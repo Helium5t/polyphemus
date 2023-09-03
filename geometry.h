@@ -31,16 +31,21 @@ struct aiMaterial;
 
 class Mesh{
     public:
-        Mesh(const aiMesh* m);
+        Mesh(const aiMesh* m, const aiScene* scene,const std::string& path);
 
         void Draw(Shader* s);
         bool useFallbackShader;
     private:
         void AllocateBindBuffers();
+        void LoadTexture(const aiMaterial* m, TexType tt);
+        void LoadMaterialData(const aiMesh* m, const aiScene* s);
+
+        std::string fsPath;
 
         // Model info
         std::vector<VertexData> vertexData;
         std::vector<unsigned int> indices;
+        std::vector<Texture*> textures;
 
         // Device Memory
         unsigned int indexCount = 0;

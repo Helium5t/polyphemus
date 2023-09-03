@@ -1,12 +1,15 @@
 #include <glad/glad.h>
 #include <assimp/scene.h>
+#include <assimp/Importer.hpp>
+#include <assimp/postprocess.h>
 
 #include <iostream>
 #include "shaders.h"
 #include "geometry.h"
 
 
-Mesh::Mesh(const aiMesh* m){
+Mesh::Mesh(const aiMesh* m, const aiScene* scene,const std::string& path){
+    fsPath = path;
     vertexData.resize(m->mNumVertices);
     for (unsigned int i = 0; i < m->mNumVertices; i++){
         auto& pos = m->mVertices[i];
@@ -38,6 +41,7 @@ Mesh::Mesh(const aiMesh* m){
             indices.push_back(m->mFaces[i].mIndices[j]);
         }
     }
+    LoadMaterialData(m, scene);
     AllocateBindBuffers();
 
     indexCount = indices.size();
@@ -82,4 +86,53 @@ void Mesh::AllocateBindBuffers(){
     glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void*) (sizeof(float) * 11));
     
     glBindVertexArray(0);
+}
+
+void Mesh::LoadMaterialData(const aiMesh* m, const aiScene* s){
+    if(m->mMaterialIndex < 0){
+        std::cerr << "[MESH][MATERIALS][WARN] Mesh "<< m->mName.C_Str() <<" in Scene " << s->mName.C_Str() << " has no materials that can be loaded" << std::endl;
+        return;
+    }
+
+    aiMaterial* mat = s->mMaterials[m->mMaterialIndex];
+    LoadTexture(mat, TexType::Albedo);
+    LoadTexture(mat, TexType::MR);
+    LoadTexture(mat, TexType::Normal);
+    LoadTexture(mat, TexType::AO);
+    LoadTexture(mat, TexType::Emissive);
+}
+
+void Mesh::LoadTexture(const aiMaterial* m, TexType tt){
+    aiTextureType aiTT;
+    bool srgb = false;
+    switch (tt){
+        case TexType::Albedo:
+            aiTT = aiTextureType_DIFFUSE;
+            srgb = true;
+            break;
+        case TexType::MR:
+            aiTT = aiTextureType_DIFFUSE_ROUGHNESS;
+            break;
+        case TexType::Normal:
+            aiTT = aiTextureType_NORMALS;
+            break;
+        case TexType::AO:
+            aiTT = aiTextureType_AMBIENT_OCCLUSION;
+            break;
+        case TexType::Emissive:
+            aiTT = aiTextureType_EMISSIVE;
+            break;
+    }
+
+    if (m->GetTextureCount(aiTT) > 0){
+        aiString assetFileName;
+        m->GetTexture(aiTT, 0, &assetFileName);
+
+        std::string assetDirectory = fsPath.substr(0, fsPath.find_last_of('/'));
+        std::string assetPath = assetDirectory + "/" + assetFileName.C_Str();
+        Texture* t = new Texture(assetPath, tt, srgb);
+        textures.push_back(t);
+    }else{
+        std::cerr << "[MESH][TEXTURE][LOAD][WARN] Requested texture (" << tex_name(tt) <<") is not present in model. ("<< fsPath << ")" << std::endl;
+    }
 }

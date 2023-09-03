@@ -31,7 +31,7 @@ class Model{
         void HandleInput(GLFWwindow* w,float deltaTimeMs,glm::vec2 mouseDelta);
         void DrawDebugUI();
     private:
-        int ParseNode(aiNode* n, const aiScene* s);
+        int ParseNode(aiNode* n, const aiScene* s,const std::string& path);
         void DrawNode(Shader* s, int nodeID, glm::mat4& parentTransform);
         
         // Model hierarchy

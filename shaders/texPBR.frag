@@ -24,9 +24,28 @@ uniform vec3 m_albedo;
 uniform vec3 l_Pos;
 uniform vec3 l_Color;
 uniform vec3 l_CamPos;
+uniform float l_Strength;
 
 // UI ubo (for showing specific maps)
 uniform int texFlag;
+
+// Convert vector from tangent space to world space, normals are stored in tangent space in the texture.
+vec3 TStoWSvector(vec3 v){
+    v = v * 2. -1.;
+
+    // Build tangents from fragments (for now)
+    vec3 p1 = dFdx(v_wPos);
+    vec3 p2 = dFdy(v_wPos);
+    vec2 st1 = dFdx(v_uv);
+    vec2 st2 = dFdy(v_uv);
+
+    vec3 N = normalize(v_normal);
+    vec3 T = normalize(p1 * st2.t - p2*st1.t);
+    vec3 B = -normalize(cross(N,T));
+    mat3 TBN = mat3(T,B,N);
+
+    return normalize(TBN * v);
+}
 
 float GGX(vec3 n, vec3 h, float roughness){
     float a = roughness * roughness;
@@ -60,12 +79,12 @@ float GGXSmithApproximated(vec3 n, vec3 v, vec3 l, float roughness){
 
 vec3 SchlickFresnel(vec3 a, vec3 b, vec3 f0)
 {
-    float cosTheta = max(dot(a,b), 1.0);
+    float cosTheta = max(dot(a,b), 0.0);
     return f0 + (1.0 - f0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
 }
 
 
-vec4 BRDF(vec3 f0, vec3 n, vec3 v, float roughness, float metallic, vec3 albedo){
+vec4 BRDF(vec3 f0, vec3 n, vec3 v, float roughness, float metallic, vec3 albedo, float ao){
     vec3 lOut = vec3(0.);
 
     for(int i=0; i < NUM_LIGHTS; i++){
@@ -73,8 +92,8 @@ vec4 BRDF(vec3 f0, vec3 n, vec3 v, float roughness, float metallic, vec3 albedo)
         vec3 l = normalize(l_Pos - v_wPos);
         vec3 h = normalize( v + l);
         float dist = length(l_Pos - v_wPos);
-        float attenuation = 1. / dist*dist;
-        vec3 lRadiance = l_Color * attenuation;
+        float attenuation = 1. / (dist*dist);
+        vec3 lRadiance = (l_Color * l_Strength) * attenuation;
 
         // Cook-Torrance model with GGX NDF, Smith Masking, Schlick Approximated Fresnel
         float D = GGX(n, h, roughness);
@@ -92,22 +111,37 @@ vec4 BRDF(vec3 f0, vec3 n, vec3 v, float roughness, float metallic, vec3 albedo)
 
         lOut = (kDiff * albedo / PI + spec) * lRadiance * ndl;
     }
-
-    vec3 color = 50.0 * EPSILON * albedo + lOut; // adding albedo just to avoid having full black models
-
+    vec3 ambient = 50. * EPSILON * albedo;
+    if(ao > EPSILON){
+        ambient *= ao;
+    }
+    vec3 color = ambient + lOut;
     return vec4(color, 1.);
 }
 
 void main(){
-    vec3 nCol = (v_normal + 1.0) * 0.5; // to avoid negative values
-    vec4 texAlbedo =  (texFlag & (1 << 0) ) > 0 ?  texture(t_Albedo, v_uv) : vec4(0.);
-    vec4 texNormal =  (texFlag & (1 << 1) ) > 0 ?  texture(t_Normal, v_uv) : vec4(0.);
-    vec4 texMr =      (texFlag & (1 << 2) ) > 0 ?  texture(t_Mr, v_uv) : vec4(0.);
-    // texAlbedo =      (texFlag & (1 << 3) ) > 0 ? ((texFlag & (1 << 0) ) > 0 ?  texAlbedo * texture(t_Ao, v_uv).r: vec4(texture(t_Ao, v_uv).r) ): texAlbedo;
+    
+    vec4 baseCol = mix(vec4(1.), c_Base, c_Base.w);
+    vec4 texAlbedo =  (texFlag & (1 << 0) ) > 0 ?  texture(t_Albedo, v_uv) * vec4(baseCol.xyz, 1.): vec4(m_albedo.xyz, 1.0);
+    vec4 texNormal =  (texFlag & (1 << 1) ) > 0 ?  texture(t_Normal, v_uv) : vec4(v_normal, 1.);
+    vec4 texMr =      (texFlag & (1 << 2) ) > 0 ?  texture(t_Mr, v_uv) : vec4(0., m_roughness, m_metallic, 0.);
+    float ao = (texFlag & (1 << 3) ) > 0 ? texture(t_Ao, v_uv).r : 0.;
     vec4 texEmissive = (texFlag & (1 << 4) ) > 0 ? texture(t_Emissive, v_uv) : vec4(0.);
-    texEmissive = texture(t_Emissive, v_uv) ;
-    col = texAlbedo + texNormal + texMr + texEmissive; 
-    // float t = step(-1.1, v_uv.y);
-    col = mix(col, vec4(1.,0.,0.,1.),0.);
-    // col = vec4(v_uv, 0., 1.);
+
+    texNormal.xyz = (texFlag & (1 << 1) ) > 0 ? TStoWSvector(texNormal.xyz) : texNormal.xyz;
+
+    if(texAlbedo.a < 0.75){
+        discard;
+    }
+    vec3 f0 = mix(vec3(0.04),texAlbedo.xyz, texMr.b);
+    vec3 v = normalize(l_CamPos - v_wPos);
+
+    vec4 brdfCol = BRDF(f0, texNormal.xyz, v, texMr.g, texMr.b, texAlbedo.xyz, ao);
+    brdfCol += texEmissive;
+
+    // HDR + gamma
+    brdfCol.xyz /= (brdfCol.xyz + vec3(1.));
+    brdfCol.xyz = pow(brdfCol.xyz, vec3(GAMMA_POWER));
+    col = brdfCol;
+
 }

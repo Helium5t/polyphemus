@@ -29,7 +29,7 @@ Model::Model(const std::string& path){
 
 void Model::RootDraw(Shader* s){
     s->SetInt("texFlag", shownTextureFlags);
-    glm::vec4 bC = glm::vec4(baseColor, 1.f);
+    glm::vec4 bC = baseColor;
     s->SetVec4("c_Base", bC);
     t.DrawDebugUI();
     DrawNode(s, rootID, t.GetWSMatrix());
@@ -40,10 +40,10 @@ bool Model::UseFallbackShader(){
 };
 
 void Model::HandleInput(GLFWwindow* w,float deltaTimeMs,glm::vec2 mouseDelta){
-    if(glfwGetMouseButton(w, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS){
-        t.Rot.x += mouseDelta[1] * deltaTimeMs * rotationSpeed;
-        t.Rot.y += mouseDelta[0] * deltaTimeMs * rotationSpeed;
-    }
+    // if(glfwGetMouseButton(w, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS){
+    //     t.Rot.x += mouseDelta[1] * deltaTimeMs * rotationSpeed;
+    //     t.Rot.y += mouseDelta[0] * deltaTimeMs * rotationSpeed;
+    // }
 };
 
 void Model::DrawDebugUI(){
@@ -54,7 +54,7 @@ void Model::DrawDebugUI(){
     ImGui::CheckboxFlags("Show AO",       &shownTextureFlags, 1 << (unsigned) TexType::AO);
     ImGui::CheckboxFlags("Show Emissive",       &shownTextureFlags, 1 << (unsigned) TexType::Emissive);
     ImGui::BeginChild("Color", ImVec2(400,0));
-    ImGui::ColorPicker3("Base Color", &baseColor[0]);
+    ImGui::ColorPicker4("Base Color", &baseColor[0]);
     ImGui::EndChild();
     ImGui::End();
 };

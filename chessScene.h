@@ -11,4 +11,7 @@ class ChessScene : public Scene{
         virtual void Update(GLFWwindow* w,float deltaTimeMs,glm::vec2 mouseDelta) override;
         virtual void Draw(Camera* c) override;
         virtual void DrawUI() override;
+
+    private:
+        bool ready = false;
 };

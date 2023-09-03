@@ -9,18 +9,21 @@ ChessScene::ChessScene(){
     Shader* fallback = new Shader("fallback.vert", "fallback.frag");
     shader = new Shader("hellotex.vert","hellotex.frag",fallback);
 
-    models.push_back(new Model("assets/models/chess/ABeautifulGame.gltf"));
-    for (auto m : models){
-        if(m->UseFallbackShader()){
-            std::cout << "[MODEL][INIT][WARN] Model does not support regular shader, using fallback shader." << std::endl;
-            shader->SetUseFallback(true);
-        }
-    }
 }
 
 void ChessScene::DrawUI(){/* No specific UI so no point in spending the call time to draw UI here */}
 
 void ChessScene::Update(GLFWwindow* w,float deltaTimeMs,glm::vec2 mouseDelta){
+    if(!ready){
+        models.push_back(new Model("assets/models/chess/ABeautifulGame.gltf"));
+        for (auto m : models){
+            if(m->UseFallbackShader()){
+                std::cout << "[MODEL][INIT][WARN] Model does not support regular shader, using fallback shader." << std::endl;
+                shader->SetUseFallback(true);
+            }
+        }
+        ready = true;
+    }
     for(auto m : models){
         m->HandleInput(w, deltaTimeMs, mouseDelta);
         m->DrawDebugUI();

@@ -108,6 +108,7 @@ add_executable(
     main.cpp
     model.cpp
     mesh.cpp
+    textures.cpp
     render.cpp
     shaders.cpp
     camera.cpp

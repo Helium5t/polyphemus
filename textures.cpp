@@ -1,13 +1,13 @@
 #include <cassert>
 #include <glad/glad.h>
+#define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 #include <iostream>
 #include "shaders.h"
 #include "textures.h"
 
 
-
-Texture::Texture(std::string& path, TexType t, bool sRGB = false){
+Texture::Texture(std::string& path, TexType t, bool sRGB){
     this->type = t;
     buf = stbi_load(path.c_str(), &width, &height, &channelCount, 0);
     assert(buf != nullptr);

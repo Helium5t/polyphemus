@@ -3,6 +3,8 @@
 #include <vector>
 #include <string>
 
+#include "textures.h"
+
 
 #define RIGHT glm::vec3(1,0,0)
 #define UP glm::vec3(0,1,0)
@@ -25,6 +27,7 @@ struct VertexData{
 
 struct aiScene;
 struct aiMesh;
+struct aiMaterial;
 
 class Mesh{
     public:
@@ -35,9 +38,11 @@ class Mesh{
     private:
         void AllocateBindBuffers();
 
+        // Model info
         std::vector<VertexData> vertexData;
         std::vector<unsigned int> indices;
 
+        // Device Memory
         unsigned int indexCount = 0;
         unsigned int vertBuffObj, vertArrObj, elemBuffObj;
 };

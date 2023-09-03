@@ -31,7 +31,7 @@ class Renderer{
         bool running = true;
         GLFWwindow* glfwWindow;
         unsigned int screenW = 1920;
-        unsigned int screenH = 720;
+        unsigned int screenH = 1080;
 
         void HandleResize(int w,int h);
 

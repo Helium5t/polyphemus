@@ -6,9 +6,7 @@
 #include "genericModelScene.h"
 
 GenericModelScene::GenericModelScene(std::string modelPath){
-    Shader* fallback = new Shader("fallback.vert", "fallback.frag");
-    shader = new Shader("helloPBR.vert","texPBR.frag",fallback);
-
+    LoadShader();
     models.push_back(new Model(modelPath.c_str()));
     for (auto m : models){
         if(m->UseFallbackShader()){
@@ -20,6 +18,11 @@ GenericModelScene::GenericModelScene(std::string modelPath){
     lightColor = glm::vec3(1.f);
 }
 GenericModelScene::~GenericModelScene(){
+}
+
+void GenericModelScene::LoadShader(){
+    Shader* fallback = new Shader("fallback.vert", "fallback.frag");
+    shader = new Shader("texPBR.vert","texPBR.frag",fallback);
 }
 
 void GenericModelScene::DrawUI() {
@@ -34,6 +37,10 @@ void GenericModelScene::DrawUI() {
     ImGui::Text("Light Settings:");
     ImGui::DragFloat3("Light Position", &lightPosition[0], 0.01f);
     ImGui::ColorEdit3("Light Color", &lightColor[0]);
+    ImGui::DragFloat("Intensity", &lightStrength, 0.1f,0.1f,100.f);
+    if(ImGui::Button("Reload Shader")){
+        LoadShader();
+    }
     ImGui::End();
     for(auto m : models){
         m->DrawDebugUI();
@@ -54,6 +61,7 @@ void GenericModelScene::Draw(Camera* camera){
     shader->SetFloat("m_roughness", roughness);
     shader->SetVec3("l_Pos", lightPosition);
     shader->SetVec3("l_Color", lightColor);
+    shader->SetFloat("l_Strength", lightStrength);
     for(auto m : models){
         m->RootDraw(shader);
     }

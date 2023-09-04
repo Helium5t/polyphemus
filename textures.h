@@ -6,6 +6,8 @@ class Shader;
 #define PP_TEX_ALBEDO   "t_Albedo"
 #define PP_TEX_NORMAL   "t_Normal"
 #define PP_TEX_MR       "t_Mr"
+#define PP_TEX_M        "t_M"
+#define PP_TEX_R        "t_R"
 #define PP_TEX_AO       "t_Ao"
 #define PP_TEX_EMISSIVE "t_Emissive"
 
@@ -15,6 +17,8 @@ enum class TexType{
     MR = 2, // Metallic / Roughness
     AO = 3,
     Emissive = 4,
+    Metallic = 5,
+    Roughness = 6,
 };
 
 static std::string tex_name(TexType tt){
@@ -29,6 +33,10 @@ static std::string tex_name(TexType tt){
             return "AO";
         case TexType::Emissive:
             return "Emissive";
+        case TexType::Metallic:
+            return "Metallic";
+        case TexType::Roughness:
+            return "Roughness";
     }
     return "Unknown";
 }
@@ -46,11 +54,13 @@ class Texture{
         int channelCount;
         unsigned char *buf;
 
-        std::string bindNames[5]{
+        std::string bindNames[7]{
             PP_TEX_ALBEDO,
             PP_TEX_NORMAL,
             PP_TEX_MR,
             PP_TEX_AO,
             PP_TEX_EMISSIVE,
+            PP_TEX_M,
+            PP_TEX_R,
         };
 };

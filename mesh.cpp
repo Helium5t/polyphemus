@@ -129,6 +129,9 @@ void Mesh::LoadTexture(const aiMaterial* m, TexType tt, bool warnOnFailure){
         case TexType::Emissive:
             aiTT = aiTextureType_EMISSIVE;
             break;
+        case TexType::Metallic:
+        case TexType::Roughness:
+            assert(false && "Mesh does not support separate texture for Metallic and Roughness");
     }
 
     if (m->GetTextureCount(aiTT) > 0){

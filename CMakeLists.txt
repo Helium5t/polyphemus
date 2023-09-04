@@ -117,6 +117,7 @@ add_executable(
     scene.cpp
     chessScene.cpp
     genericModelScene.cpp
+    customTextureScene.cpp
     scenePicker.cpp)
 
 target_link_libraries(polyphemus PRIVATE stb_image imgui glfw glad nlohmann_json::nlohmann_json OpenGL::GL glm assimp)

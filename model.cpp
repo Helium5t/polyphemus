@@ -11,7 +11,7 @@
 #include "shaders.h"
 #include "model.h"
 
-Model::Model(const std::string& path){
+Model::Model(const std::string& path, bool withTextures){
     Assimp::Importer importer;
 
     unsigned int assetProcessFlags = 
@@ -24,7 +24,7 @@ Model::Model(const std::string& path){
         std::cout << "[MODEL][LOAD][ERR] " << importer.GetErrorString() << std::endl;
         throw std::runtime_error("[MODEL][LOAD][FAILURE] Failed to load model [" + path + "]:" + importer.GetErrorString());
     }  
-    rootID = ParseNode(scene->mRootNode, scene, path);
+    rootID = ParseNode(scene->mRootNode, scene, path, withTextures);
 }
 
 void Model::RootDraw(Shader* s){
@@ -59,14 +59,14 @@ void Model::DrawDebugUI(){
     ImGui::End();
 };
 
-int Model::ParseNode(aiNode* n, const aiScene* s,const std::string& path){
+int Model::ParseNode(aiNode* n, const aiScene* s,const std::string& path, bool withTextures){
     Node node;
     if(n->mNumMeshes > 0){
         node.meshesCount = n->mNumMeshes;
         node.meshes = meshes.size();
         for(unsigned int i = 0; i < n->mNumMeshes; i++){
             aiMesh* meshData = s->mMeshes[n->mMeshes[i]];
-            meshes.push_back(new Mesh(meshData, s, path));
+            meshes.push_back(new Mesh(meshData, s, path, withTextures));
         }
     }
     node.objectSpaceTransform = glm::mat4(  n->mTransformation.a1,n->mTransformation.b1,n->mTransformation.c1,n->mTransformation.d1,

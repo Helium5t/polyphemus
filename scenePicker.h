@@ -20,13 +20,22 @@ class ScenePicker{
     private:
         // Resource Management
         void FindModels(std::string path, int skipChars, Assimp::Importer& importer);
+        void FindTextures(std::string path, int skipChars);
 
         std::vector<std::string> modelPaths;
+        std::vector<std::string> texturePaths;
+        std::vector<std::string> allowedTextureExtensions = {
+            "jpeg","jpg","png"
+        };
+        std::vector<std::string> channelFilterOptions = {"Red Channel","Green Channel","Blue Channel", "Alpha Channel"};
 
         // UI
         void DrawResetUI();
         void DrawSelectUI();
         void DrawSelectModelUI();
+        void DrawSelectModelAndTextureUI();
+        void DrawModelOptionsUI();
+        void DrawSelectorUI(std::string selectorName, std::vector<std::string> options, unsigned int& selectedValue, bool isPath = true);
         void ResetUIState();
 
         // Scene Management
@@ -35,7 +44,17 @@ class ScenePicker{
 
         // Model management (for generic model loading)
         unsigned int activeModel = 0;
+        // For custom texture loading
+        unsigned int albedoID = 0,
+         normalID = 0,
+         metallicID = 0,
+         roughnessID = 0,
+         aoID = 0,
+         metalChannel = 0,
+         roughnessChannel = 0,
+         aoChannel = 0;
 
         bool selectionOpen;
         bool genericModelOpen;
+        bool customTextureOpen;
 };

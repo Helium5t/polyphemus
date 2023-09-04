@@ -23,7 +23,7 @@ struct Node{
 };
 class Model{
     public:
-        Model(const std::string& path);
+        Model(const std::string& path, bool withTextures = true);
 
         void RootDraw(Shader* s);
         bool UseFallbackShader();
@@ -31,7 +31,7 @@ class Model{
         void HandleInput(GLFWwindow* w,float deltaTimeMs,glm::vec2 mouseDelta);
         void DrawDebugUI();
     private:
-        int ParseNode(aiNode* n, const aiScene* s,const std::string& path);
+        int ParseNode(aiNode* n, const aiScene* s,const std::string& path, bool withTextures = true);
         void DrawNode(Shader* s, int nodeID, glm::mat4& parentTransform);
         
         // Model hierarchy

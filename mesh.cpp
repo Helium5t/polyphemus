@@ -8,7 +8,7 @@
 #include "geometry.h"
 
 
-Mesh::Mesh(const aiMesh* m, const aiScene* scene,const std::string& path){
+Mesh::Mesh(const aiMesh* m, const aiScene* scene,const std::string& path, bool withTextures){
     fsPath = path;
     vertexData.resize(m->mNumVertices);
     for (unsigned int i = 0; i < m->mNumVertices; i++){
@@ -41,7 +41,10 @@ Mesh::Mesh(const aiMesh* m, const aiScene* scene,const std::string& path){
             indices.push_back(m->mFaces[i].mIndices[j]);
         }
     }
-    LoadMaterialData(m, scene);
+    texturesEnabled = withTextures;
+    if(withTextures){
+        LoadMaterialData(m, scene);
+    }
     AllocateBindBuffers();
 
     indexCount = indices.size();
@@ -50,8 +53,10 @@ Mesh::Mesh(const aiMesh* m, const aiScene* scene,const std::string& path){
 }
 
 void Mesh::Draw(Shader* s){
-    for(auto t: textures){
-        t->Bind(s);
+    if (texturesEnabled){ // Not actually necessary as textures would be empty given they don't get loaded. Added for clarity.
+        for(auto t: textures){
+            t->Bind(s);
+        }
     }
     glBindVertexArray(vertArrObj);
     glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
@@ -89,6 +94,7 @@ void Mesh::AllocateBindBuffers(){
 }
 
 void Mesh::LoadMaterialData(const aiMesh* m, const aiScene* s){
+    assert(texturesEnabled);
     if(m->mMaterialIndex < 0){
         std::cerr << "[MESH][MATERIALS][WARN] Mesh "<< m->mName.C_Str() <<" in Scene " << s->mName.C_Str() << " has no materials that can be loaded" << std::endl;
         return;
@@ -103,6 +109,7 @@ void Mesh::LoadMaterialData(const aiMesh* m, const aiScene* s){
 }
 
 void Mesh::LoadTexture(const aiMaterial* m, TexType tt, bool warnOnFailure){
+    assert(texturesEnabled);
     aiTextureType aiTT;
     bool srgb = false;
     switch (tt){

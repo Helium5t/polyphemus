@@ -14,8 +14,9 @@ GenericModelScene::GenericModelScene(std::string modelPath){
             shader->SetUseFallback(true);
         }
     }
-    lightPosition = glm::vec3(0.f, 0.f, -5.f);
+    lightPosition = glm::vec3(0.f, 1.f, 1.f);
     lightColor = glm::vec3(1.f);
+    lightStrength = 1.f;
 }
 GenericModelScene::~GenericModelScene(){
 }
@@ -26,8 +27,6 @@ void GenericModelScene::LoadShader(){
 }
 
 void GenericModelScene::DrawUI() {
-    // Debug (substitute with texture later on)
-
     ImGui::Begin("Scene Settings");
     ImGui::Text("Material Debug Properties");
     ImGui::ColorEdit3("Albedo", &albedo[0]);

@@ -48,11 +48,11 @@ void Model::HandleInput(GLFWwindow* w,float deltaTimeMs,glm::vec2 mouseDelta){
 
 void Model::DrawDebugUI(){
     ImGui::Begin("Model View");
-    ImGui::CheckboxFlags("Show Albedo",   &shownTextureFlags, 1 << (unsigned) TexType::Albedo);
-    ImGui::CheckboxFlags("Show Normal",   &shownTextureFlags, 1 << (unsigned) TexType::Normal);
-    ImGui::CheckboxFlags("Show MR",       &shownTextureFlags, 1 << (unsigned) TexType::MR);
-    ImGui::CheckboxFlags("Show AO",       &shownTextureFlags, 1 << (unsigned) TexType::AO);
-    ImGui::CheckboxFlags("Show Emissive",       &shownTextureFlags, 1 << (unsigned) TexType::Emissive);
+    ImGui::CheckboxFlags("Use Albedo Map",   &shownTextureFlags, 1 << (unsigned) TexType::Albedo);
+    ImGui::CheckboxFlags("Use Normal Map",   &shownTextureFlags, 1 << (unsigned) TexType::Normal);
+    ImGui::CheckboxFlags("Use MR Map",       &shownTextureFlags, 1 << (unsigned) TexType::MR);
+    ImGui::CheckboxFlags("Use AO Map",       &shownTextureFlags, 1 << (unsigned) TexType::AO);
+    ImGui::CheckboxFlags("Use Emissive Map",       &shownTextureFlags, 1 << (unsigned) TexType::Emissive);
     ImGui::BeginChild("Color", ImVec2(400,0));
     ImGui::ColorPicker4("Base Color", &baseColor[0]);
     ImGui::EndChild();

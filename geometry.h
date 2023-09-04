@@ -31,7 +31,7 @@ struct aiMaterial;
 
 class Mesh{
     public:
-        Mesh(const aiMesh* m, const aiScene* scene,const std::string& path);
+        Mesh(const aiMesh* m, const aiScene* scene,const std::string& path, bool withTextures = true);
 
         void Draw(Shader* s);
         bool useFallbackShader;
@@ -45,6 +45,9 @@ class Mesh{
         // Model info
         std::vector<VertexData> vertexData;
         std::vector<unsigned int> indices;
+
+        // Material info
+        bool texturesEnabled;
         std::vector<Texture*> textures;
 
         // Device Memory

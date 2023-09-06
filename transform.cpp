@@ -15,7 +15,9 @@ void Transform::DrawDebugUI(){
     ImGuiIO& io = ImGui::GetIO();
     auto f = io.Fonts->Fonts[1]; 
 
-    ImGui::Begin("Object Transform");
+    ImGui::SetNextWindowPos(ImVec2(400, 20));
+	ImGui::SetNextWindowSize(ImVec2(800, 150));
+    ImGui::Begin("Object Transform", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse);
     // Title in bold
     ImGui::PushFont(f);
     ImGui::Text("Transform:");

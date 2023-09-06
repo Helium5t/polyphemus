@@ -27,7 +27,10 @@ void GenericModelScene::LoadShader(){
 }
 
 void GenericModelScene::DrawUI() {
-    ImGui::Begin("Scene Settings");
+    ImGui::SetNextWindowPos(ImVec2(0, 20));
+	ImGui::SetNextWindowSize(ImVec2(400, 280));
+
+	ImGui::Begin("Scene Settings", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse);
     ImGui::Text("Material Debug Properties");
     ImGui::ColorEdit3("Albedo", &albedo[0]);
     ImGui::SliderFloat("Metallic", &metallic, 0.f, 1.f);

@@ -71,7 +71,9 @@ void Camera::HandleInput(float deltaTime, GLFWwindow *w){
 }
 
 void Camera::DrawDebugUI(){
-    ImGui::Begin("Camera");
+    ImGui::SetNextWindowPos(ImVec2(0, 800));
+	ImGui::SetNextWindowSize(ImVec2(400, 280));
+    ImGui::Begin("Camera", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse);
     // ImGui::DragFloat3("Position", &pos[0], 0.01f); // Commented out as we now use keyboard inputs 
     ImGui::DragFloat("Camera Speed", &speed,0.25f, 0.1f, 20.0f );
     if (ImGui::SliderFloat("Field of View", &FOV, 10.0f, 120.0f)){

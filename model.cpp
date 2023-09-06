@@ -47,7 +47,9 @@ void Model::HandleInput(GLFWwindow* w,float deltaTimeMs,glm::vec2 mouseDelta){
 };
 
 void Model::DrawDebugUI(){
-    ImGui::Begin("Model View");
+    ImGui::SetNextWindowPos(ImVec2(0, 300));
+	ImGui::SetNextWindowSize(ImVec2(400, 500));
+    ImGui::Begin("Model View", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse);
     ImGui::CheckboxFlags("Use Albedo Map",   &shownTextureFlags, 1 << (unsigned) TexType::Albedo);
     ImGui::CheckboxFlags("Use Normal Map",   &shownTextureFlags, 1 << (unsigned) TexType::Normal);
     ImGui::CheckboxFlags("Use MR Map",       &shownTextureFlags, 1 << (unsigned) TexType::MR);

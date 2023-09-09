@@ -28,7 +28,6 @@ Model::Model(const std::string& path, bool withTextures){
 }
 
 void Model::RootDraw(Shader* s){
-    s->SetInt("texFlag", shownTextureFlags);
     glm::vec4 bC = baseColor;
     s->SetVec4("c_Base", bC);
     t.DrawDebugUI();
@@ -47,18 +46,18 @@ void Model::HandleInput(GLFWwindow* w,float deltaTimeMs,glm::vec2 mouseDelta){
 };
 
 void Model::DrawDebugUI(){
-    ImGui::SetNextWindowPos(ImVec2(0, 300));
-	ImGui::SetNextWindowSize(ImVec2(400, 500));
-    ImGui::Begin("Model View", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse);
-    ImGui::CheckboxFlags("Use Albedo Map",   &shownTextureFlags, 1 << (unsigned) TexType::Albedo);
-    ImGui::CheckboxFlags("Use Normal Map",   &shownTextureFlags, 1 << (unsigned) TexType::Normal);
-    ImGui::CheckboxFlags("Use MR Map",       &shownTextureFlags, 1 << (unsigned) TexType::MR);
-    ImGui::CheckboxFlags("Use AO Map",       &shownTextureFlags, 1 << (unsigned) TexType::AO);
-    ImGui::CheckboxFlags("Use Emissive Map",       &shownTextureFlags, 1 << (unsigned) TexType::Emissive);
-    ImGui::BeginChild("Color", ImVec2(400,0));
-    ImGui::ColorPicker4("Base Color", &baseColor[0]);
-    ImGui::EndChild();
-    ImGui::End();
+    // ImGui::SetNextWindowPos(ImVec2(0, 300));
+	// ImGui::SetNextWindowSize(ImVec2(400, 500));
+    // ImGui::Begin("Model View", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse);
+    // ImGui::CheckboxFlags("Use Albedo Map",   &shownTextureFlags, 1 << (unsigned) TexType::Albedo);
+    // ImGui::CheckboxFlags("Use Normal Map",   &shownTextureFlags, 1 << (unsigned) TexType::Normal);
+    // ImGui::CheckboxFlags("Use MR Map",       &shownTextureFlags, 1 << (unsigned) TexType::MR);
+    // ImGui::CheckboxFlags("Use AO Map",       &shownTextureFlags, 1 << (unsigned) TexType::AO);
+    // ImGui::CheckboxFlags("Use Emissive Map",       &shownTextureFlags, 1 << (unsigned) TexType::Emissive);
+    // ImGui::BeginChild("Color", ImVec2(400,0));
+    // ImGui::ColorPicker4("Base Color", &baseColor[0]);
+    // ImGui::EndChild();
+    // ImGui::End();
 };
 
 int Model::ParseNode(aiNode* n, const aiScene* s,const std::string& path, bool withTextures){

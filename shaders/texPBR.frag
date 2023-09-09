@@ -122,13 +122,13 @@ vec4 BRDF(vec3 f0, vec3 n, vec3 v, float roughness, float metallic, vec3 albedo,
 void main(){
     
     vec4 baseCol = mix(vec4(1.), c_Base, c_Base.w);
-    vec4 texAlbedo =  (texFlag & (1 << 0) ) > 0 ?  texture(t_Albedo, v_uv) * vec4(baseCol.xyz, 1.): vec4(m_albedo.xyz, 1.0);
-    vec4 texNormal =  (texFlag & (1 << 1) ) > 0 ?  texture(t_Normal, v_uv) : vec4(v_normal, 1.);
-    vec4 texMr =      (texFlag & (1 << 2) ) > 0 ?  texture(t_Mr, v_uv) : vec4(0., m_roughness, m_metallic, 0.);
-    float ao = (texFlag & (1 << 3) ) > 0 ? texture(t_Ao, v_uv).r : 0.;
-    vec4 texEmissive = (texFlag & (1 << 4) ) > 0 ? texture(t_Emissive, v_uv) : vec4(0.);
+    vec4 texAlbedo = texture(t_Albedo, v_uv);
+    vec4 texNormal = texture(t_Normal, v_uv);
+    vec4 texMr =     texture(t_Mr, v_uv);
+    float ao =       texture(t_Ao, v_uv).r ;
+    vec4 texEmissive = texture(t_Emissive, v_uv);
 
-    texNormal.xyz = (texFlag & (1 << 1) ) > 0 ? TStoWSvector(texNormal.xyz) : texNormal.xyz;
+    texNormal.xyz =  TStoWSvector(texNormal.xyz) ;
 
     if(texAlbedo.a < 0.75){
         discard;

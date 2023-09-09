@@ -12,7 +12,8 @@ CustomTextureScene::CustomTextureScene(ModelTextureData mtd){
     for (auto m : models){
         if(m->UseFallbackShader()){
             std::cout << "[MODEL][INIT][WARN] Model does not support regular shader, using fallback shader." << std::endl;
-            shader->SetUseFallback(true);
+            mainShader->SetUseFallback(true);
+            textureShader->SetUseFallback(true);
         }
     }
     lightPosition = glm::vec3(0.f, 1.f, 1.f);
@@ -36,7 +37,8 @@ CustomTextureScene::~CustomTextureScene(){
 
 void CustomTextureScene::LoadShader(){
     Shader* fallback = new Shader("fallback.vert", "fallback.frag");
-    shader = new Shader("texPBR.vert","customtexPBR.frag",fallback);
+    textureShader = new Shader("texPBR.vert", "hellotex_split.frag", fallback);
+    mainShader = new Shader("texPBR.vert","customtexPBR.frag",fallback);
 }
 
 void CustomTextureScene::DrawUI() {
@@ -53,6 +55,7 @@ void CustomTextureScene::DrawUI() {
         LoadShader();
     }
     ImGui::End();
+    DrawTextureViewUI();
     for(auto m : models){
         m->DrawDebugUI();
     }

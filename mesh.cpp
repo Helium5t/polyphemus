@@ -53,6 +53,7 @@ Mesh::Mesh(const aiMesh* m, const aiScene* scene,const std::string& path, bool w
 }
 
 void Mesh::Draw(Shader* s){
+    s->SetBool("b_packedMR", texturesEnabled);
     if (texturesEnabled){ // Not actually necessary as textures would be empty given they don't get loaded. Added for clarity.
         for(auto t: textures){
             t->Bind(s);
@@ -142,7 +143,10 @@ void Mesh::LoadTexture(const aiMaterial* m, TexType tt, bool warnOnFailure){
         std::string assetPath = assetDirectory + "/" + assetFileName.C_Str();
         Texture* t = new Texture(assetPath, tt, srgb);
         textures.push_back(t);
-    }else if(warnOnFailure){
-        std::cerr << "[MESH][TEXTURE][LOAD][WARN] Requested texture (" << tex_name(tt) <<") is not present in model. ("<< fsPath << ")" << std::endl;
+    }else{
+        textures.push_back(new BlackTexture(tt));
+        if(warnOnFailure){
+            std::cerr << "[MESH][TEXTURE][LOAD][WARN] Requested texture (" << tex_name(tt) <<") is not present in model. ("<< fsPath << ")" << std::endl;
+        }
     }
 }

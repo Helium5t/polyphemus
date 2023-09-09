@@ -82,7 +82,6 @@ vec3 SchlickFresnel(vec3 a, vec3 b, vec3 f0)
     return f0 + (1.0 - f0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
 }
 
-
 vec4 BRDF(vec3 f0, vec3 n, vec3 v, float roughness, float metallic, vec3 albedo, float ao){
     vec3 lOut = vec3(0.);
 
@@ -121,7 +120,7 @@ vec4 BRDF(vec3 f0, vec3 n, vec3 v, float roughness, float metallic, vec3 albedo,
 void main(){
     vec2 uv = (v_uv + uv_transform.xy)  * uv_transform.zw;
     vec4 baseCol = mix(vec4(1.), c_Base, c_Base.w);
-    vec4 texAlbedo =    texture(t_Albedo, uv) * vec4(baseCol.xyz, 1.);
+    vec4 texAlbedo =    texture(t_Albedo, uv);// * vec4(baseCol.xyz, 1.);
     vec4 texNormal =    texture(t_Normal, uv); 
     float texM =        texture(t_M, uv)[chan_metallic];
     float texR =        texture(t_R, uv)[chan_roughness]; // TODO select channel based on uniform
@@ -143,5 +142,4 @@ void main(){
     brdfCol.xyz /= (brdfCol.xyz + vec3(1.));
     brdfCol.xyz = pow(brdfCol.xyz, vec3(GAMMA_POWER));
     col = brdfCol;
-
 }

@@ -14,6 +14,14 @@ class Scene{
         virtual void DrawUI() = 0;
 
     protected:
+        bool PreviewTextures();
+        void DrawTextureViewUI();
         std::vector<Model*> models;
         Shader* shader;
+        Shader* mainShader;
+        Shader* textureShader;
+
+        unsigned int shownTextureFlags;
+        glm::vec4 uv_transform = glm::vec4(0.,0.,1.,1.);
+
 };

@@ -45,14 +45,17 @@ class Texture{
 
     public:
         Texture(std::string& path, TexType t, bool sRGB = false);
-        void Bind(const Shader* shader);
-    private:
+        virtual void Bind(const Shader* shader);
+    
+    protected:
+        Texture(TexType t);
         TexType type;
         unsigned int glID;
+        unsigned char *buf;
+    private:
         int height;
         int width;
         int channelCount;
-        unsigned char *buf;
 
         std::string bindNames[7]{
             PP_TEX_ALBEDO,
@@ -63,4 +66,11 @@ class Texture{
             PP_TEX_M,
             PP_TEX_R,
         };
+};
+
+
+class BlackTexture : public Texture{
+    public:
+        BlackTexture(TexType t);
+        virtual void Bind(const Shader* s) override; 
 };

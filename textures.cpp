@@ -7,10 +7,8 @@
 #include "textures.h"
 
 
-Texture::Texture(std::string& path, TexType t, bool sRGB){
+Texture::Texture(TexType t){
     this->type = t;
-    buf = stbi_load(path.c_str(), &width, &height, &channelCount, 0);
-    assert(buf != nullptr);
 
     glGenTextures(1, &glID);
     glBindTexture(GL_TEXTURE_2D, glID);
@@ -19,7 +17,11 @@ Texture::Texture(std::string& path, TexType t, bool sRGB){
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+}
 
+Texture::Texture(std::string& path, TexType t, bool sRGB):Texture::Texture(t){
+    buf = stbi_load(path.c_str(), &width, &height, &channelCount, 0);
+    assert(buf != nullptr);
     unsigned int layout;
     unsigned int f; 
     if(channelCount  ==3){
@@ -41,3 +43,16 @@ void Texture::Bind(const Shader* shader){
     glBindTexture(GL_TEXTURE_2D, glID);
     shader->SetInt(bindNames[(int)type], (unsigned int) type);
 };
+
+
+
+BlackTexture::BlackTexture(TexType t):Texture::Texture(t){
+    unsigned char x[4] =  {0, 0, 0, 255};
+    buf = x;
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, buf);
+}
+
+void BlackTexture::Bind(const Shader* shader){
+    Texture::Bind(shader);
+}
+

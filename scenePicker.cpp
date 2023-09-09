@@ -42,7 +42,7 @@ void ScenePicker::FindTextures(std::string path, int skipChars){
         for(auto s : allowedTextureExtensions){
             if (s != ext.substr(1)) continue;
             
-            texturePaths.push_back(e.path().string());
+            textureFilePaths.push_back(e.path().string());
             break;
         }
 
@@ -118,7 +118,6 @@ void ScenePicker::DrawSelectModelUI(){
     ImGui::OpenPopup("Model Selection");
     if (ImGui::BeginPopupModal("Model Selection", &genericModelOpen,  ImGuiWindowFlags_Modal | ImGuiWindowFlags_Popup)){
         DrawModelOptionsUI();
-
         if(ImGui::Button("Load Model")){
             std::string fullPath = modelPaths[activeModel];
             activeScene = new GenericModelScene(fullPath);
@@ -151,23 +150,23 @@ void ScenePicker::DrawSelectModelAndTextureUI(){
     if (ImGui::BeginPopupModal("Model And Texture Selection", &customTextureOpen,  ImGuiWindowFlags_Modal | ImGuiWindowFlags_Popup)){
         DrawModelOptionsUI();
         
-        DrawSelectorUI("Albedo", texturePaths, albedoID);
-        DrawSelectorUI("Normal", texturePaths,  normalID);
-        DrawSelectorUI("Metallic", texturePaths,  metallicID);
+        DrawSelectorUI("Albedo", textureFilePaths, albedoIdx);
+        DrawSelectorUI("Normal", textureFilePaths,  normalIdx);
+        DrawSelectorUI("Metallic", textureFilePaths,  metallicIdx);
         DrawSelectorUI("Metal Channel", channelFilterOptions,  metalChannel);
-        DrawSelectorUI("Roughness", texturePaths,  roughnessID);
+        DrawSelectorUI("Roughness", textureFilePaths,  roughnessIdx);
         DrawSelectorUI("Roughness Channel", channelFilterOptions,  roughnessChannel);
-        DrawSelectorUI("Ambient Occlusion", texturePaths,  aoID);
+        DrawSelectorUI("Ambient Occlusion", textureFilePaths,  aoIdx);
         DrawSelectorUI("AO Channel", channelFilterOptions,  aoChannel);
 
         if(ImGui::Button("Load Model")){
             ModelTextureData mtd;
             mtd.modelPath = modelPaths[activeModel];
-            mtd.albedoPath = texturePaths[albedoID];
-            mtd.normalPath = texturePaths[normalID];
-            mtd.metallicPath = texturePaths[metallicID];
-            mtd.roughnessPath = texturePaths[roughnessID];
-            mtd.aoPath = texturePaths[aoID];
+            mtd.albedoPath = textureFilePaths[albedoIdx];
+            mtd.normalPath = textureFilePaths[normalIdx];
+            mtd.metallicPath = textureFilePaths[metallicIdx];
+            mtd.roughnessPath = textureFilePaths[roughnessIdx];
+            mtd.aoPath = textureFilePaths[aoIdx];
             mtd.metalChannelFilter = metalChannel;
             mtd.roughnessChannelFilter = roughnessChannel;
             mtd.aoChannelFilter = aoChannel;

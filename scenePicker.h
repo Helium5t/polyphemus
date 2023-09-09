@@ -23,7 +23,7 @@ class ScenePicker{
         void FindTextures(std::string path, int skipChars);
 
         std::vector<std::string> modelPaths;
-        std::vector<std::string> texturePaths;
+        std::vector<std::string> textureFilePaths;
         std::vector<std::string> allowedTextureExtensions = {
             "jpeg","jpg","png"
         };
@@ -45,11 +45,12 @@ class ScenePicker{
         // Model management (for generic model loading)
         unsigned int activeModel = 0;
         // For custom texture loading
-        unsigned int albedoID = 0,
-         normalID = 0,
-         metallicID = 0,
-         roughnessID = 0,
-         aoID = 0,
+        unsigned int albedoIdx = 0,
+         normalIdx = 0,
+         metallicIdx = 0,
+         roughnessIdx = 0,
+         emissiveIdx = 0,
+         aoIdx = 0,
          metalChannel = 0,
          roughnessChannel = 0,
          aoChannel = 0;

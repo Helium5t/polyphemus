@@ -34,7 +34,9 @@ Shader::Shader(const std::string& vertexFileName, const std::string& fragmentFil
         vCode = vShaderStream.str();
         fCode = fShaderStream.str();
     }catch(std::ifstream::failure & e){
-        throw std::runtime_error(e);
+        std::string errMsg = "[SETUP][ERR][SHADER][FILE][STREAM] error reading shader files:";
+        errMsg += e.what();
+        throw std::runtime_error(errMsg);
     }
 
 

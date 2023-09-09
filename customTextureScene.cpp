@@ -24,7 +24,13 @@ CustomTextureScene::CustomTextureScene(ModelTextureData mtd){
     textures.push_back(new Texture(data.metallicPath, TexType::Metallic));
     textures.push_back(new Texture(data.roughnessPath, TexType::Roughness));
     textures.push_back(new Texture(data.aoPath, TexType::AO));
+    if(mtd.emissivePath != ""){
+        textures.push_back(new Texture(data.emissivePath, TexType::Emissive));
+    }else{
+        textures.push_back(new BlackTexture(TexType::Emissive));
+    }
 }
+
 CustomTextureScene::~CustomTextureScene(){
 }
 

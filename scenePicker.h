@@ -54,7 +54,8 @@ class ScenePicker{
          metalChannel = 0,
          roughnessChannel = 0,
          aoChannel = 0;
-
+        bool emissiveEnabled = false;
+        
         bool selectionOpen;
         bool genericModelOpen;
         bool customTextureOpen;

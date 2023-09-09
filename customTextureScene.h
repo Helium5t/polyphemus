@@ -10,6 +10,7 @@ struct ModelTextureData{
     std::string metallicPath;
     std::string roughnessPath;
     std::string aoPath;
+    std::string emissivePath;
     // Some values (metal, roughness) are singled valued so only one channel is needed
     unsigned int metalChannelFilter;
     unsigned int roughnessChannelFilter;

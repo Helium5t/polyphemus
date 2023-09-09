@@ -158,6 +158,10 @@ void ScenePicker::DrawSelectModelAndTextureUI(){
         DrawSelectorUI("Roughness Channel", channelFilterOptions,  roughnessChannel);
         DrawSelectorUI("Ambient Occlusion", textureFilePaths,  aoIdx);
         DrawSelectorUI("AO Channel", channelFilterOptions,  aoChannel);
+        ImGui::Checkbox("Enable Emissive", &emissiveEnabled);
+        if(emissiveEnabled){
+            DrawSelectorUI("Emissive", textureFilePaths, emissiveIdx);
+        }
 
         if(ImGui::Button("Load Model")){
             ModelTextureData mtd;
@@ -170,6 +174,7 @@ void ScenePicker::DrawSelectModelAndTextureUI(){
             mtd.metalChannelFilter = metalChannel;
             mtd.roughnessChannelFilter = roughnessChannel;
             mtd.aoChannelFilter = aoChannel;
+            mtd.emissivePath = emissiveEnabled? textureFilePaths[emissiveIdx] : "",
             activeScene = new CustomTextureScene(mtd);
             customTextureOpen = false;
             ImGui::CloseCurrentPopup();

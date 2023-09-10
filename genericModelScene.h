@@ -17,7 +17,8 @@ class GenericModelScene : public Scene {
 	    float metallic =  .5f;
 	    float roughness = .5f;
 
-        glm::vec3 lightPosition;
-        glm::vec3 lightColor;
-        float lightStrength;
+        int lightCount = 1;
+        glm::vec3 lightPositions[10];
+        glm::vec3 lightColors[10];
+        float lightStrengths[10];
 };

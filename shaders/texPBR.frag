@@ -3,7 +3,7 @@
 #define EPSILON 1e-5
 #define PI 3.14159265358979323846264338327
 #define GAMMA_POWER 0.4545454545454545
-#define NUM_LIGHTS 1
+#define NUM_LIGHTS 10
 
 out vec4 col;
 in vec3 v_normal;
@@ -21,10 +21,10 @@ uniform float m_metallic;
 uniform vec3 m_albedo;
 
 // Light ubo
-uniform vec3 l_Pos;
-uniform vec3 l_Color;
+uniform vec3  l_Pos[10];
+uniform vec3  l_Color[10];
+uniform float l_Strength[10];
 uniform vec3 l_CamPos;
-uniform float l_Strength;
 
 // UI ubo (for showing specific maps)
 uniform int texFlag;
@@ -88,12 +88,15 @@ vec4 BRDF(vec3 f0, vec3 n, vec3 v, float roughness, float metallic, vec3 albedo,
     vec3 lOut = vec3(0.);
 
     for(int i=0; i < NUM_LIGHTS; i++){
+        if(l_Strength[i] < EPSILON){
+            continue;
+        }
         // Assume point light model
-        vec3 l = normalize(l_Pos - v_wPos);
+        vec3 l = normalize(l_Pos[i] - v_wPos);
         vec3 h = normalize( v + l);
-        float dist = length(l_Pos - v_wPos);
+        float dist = length(l_Pos[i] - v_wPos);
         float attenuation = 1. / (dist*dist);
-        vec3 lRadiance = (l_Color * l_Strength) * attenuation;
+        vec3 lRadiance = (l_Color[i] * l_Strength[i]) * attenuation;
 
         // Cook-Torrance model with GGX NDF, Smith Masking, Schlick Approximated Fresnel
         float D = GGX(n, h, roughness);
@@ -109,7 +112,7 @@ vec4 BRDF(vec3 f0, vec3 n, vec3 v, float roughness, float metallic, vec3 albedo,
         vec3 kDiff = vec3(1.) - kSpec; // Ensures energy conservation
         kDiff *= 1. - metallic; // Metals do not scatter light via internal reflection
 
-        lOut = (kDiff * albedo / PI + spec) * lRadiance * ndl;
+        lOut += (kDiff * albedo / PI + spec) * lRadiance * ndl;
     }
     vec3 ambient = 50. * EPSILON * albedo;
     if(ao > EPSILON){

@@ -15,9 +15,6 @@ void Scene::Draw(Camera* c){
             shader->SetVec4("uv_transform", uv_transform);
         };
 
-
-
-
 bool Scene::PreviewTextures(){
     return shownTextureFlags != 0;
 }

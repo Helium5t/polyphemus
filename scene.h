@@ -22,6 +22,7 @@ class Scene{
         Shader* textureShader;
 
         unsigned int shownTextureFlags;
+        // xy = Offset zw = Multiply
         glm::vec4 uv_transform = glm::vec4(0.,0.,1.,1.);
 
 };

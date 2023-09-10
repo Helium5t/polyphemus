@@ -99,7 +99,6 @@ void CustomTextureScene::Draw(Camera* camera){
     shader->SetInt("chan_metallic", data.metalChannelFilter);
     shader->SetInt("chan_roughness", data.roughnessChannelFilter);
     shader->SetInt("chan_ao", data.aoChannelFilter);
-    shader->SetVec4("uv_transform", uvTransform);
 
     for(auto& t: textures){
         t->Bind(shader);

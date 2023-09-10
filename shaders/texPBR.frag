@@ -19,6 +19,7 @@ uniform sampler2D t_Emissive;
 uniform float m_roughness; // constant values just to test things, should actually get values from textures later on.
 uniform float m_metallic;  
 uniform vec3 m_albedo;
+uniform vec4 uv_transform;
 
 // Light ubo
 uniform vec3  l_Pos[10];
@@ -124,12 +125,13 @@ vec4 BRDF(vec3 f0, vec3 n, vec3 v, float roughness, float metallic, vec3 albedo,
 
 void main(){
     
+    vec2 uv = (v_uv + uv_transform.xy)  * uv_transform.zw;
     vec4 baseCol = mix(vec4(1.), c_Base, c_Base.w);
-    vec4 texAlbedo = texture(t_Albedo, v_uv);
-    vec4 texNormal = texture(t_Normal, v_uv);
-    vec4 texMr =     texture(t_Mr, v_uv);
-    float ao =       texture(t_Ao, v_uv).r ;
-    vec4 texEmissive = texture(t_Emissive, v_uv);
+    vec4 texAlbedo =   texture(t_Albedo, uv);
+    vec4 texNormal =   texture(t_Normal, uv);
+    vec4 texMr =       texture(t_Mr, uv);
+    float ao =         texture(t_Ao, uv).r ;
+    vec4 texEmissive = texture(t_Emissive, uv);
 
     texNormal.xyz =  TStoWSvector(texNormal.xyz) ;
 

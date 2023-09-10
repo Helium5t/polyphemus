@@ -34,7 +34,9 @@ class CustomTextureScene : public Scene {
         std::vector<Texture*> textures;
         // xy = Offset zw = Multiply
         glm::vec4 uvTransform = glm::vec4(0.f,0.f, 1.f,1.f);
-        glm::vec3 lightPosition;
-        glm::vec3 lightColor;
-        float lightStrength;
+
+        int lightCount = 1;
+        glm::vec3 lightPositions[10];
+        glm::vec3 lightColors[10];
+        float lightStrengths[10];
 };

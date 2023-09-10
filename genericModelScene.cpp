@@ -78,8 +78,6 @@ void GenericModelScene::Draw(Camera* camera){
     shader->SetVec3("m_albedo", albedo);
     shader->SetFloat("m_metallic", metallic);
     shader->SetFloat("m_roughness", roughness);
-    ImGui::SetNextWindowPos(ImVec2(700,200));
-    ImGui::Begin("Debug Lights");
     for(int i = 0; i <10 ; i++){
         if(i >= lightCount){
             shader->SetFloat("l_Strength[" + std::to_string(i) + "]", 0.f);
@@ -89,7 +87,6 @@ void GenericModelScene::Draw(Camera* camera){
         shader->SetVec3( "l_Pos[" + std::to_string(i) + "]",  lightPositions[i]);
         shader->SetVec3( "l_Color[" + std::to_string(i) + "]", lightColors[i]);
     }
-    ImGui::End();
     for(auto m : models){
         m->RootDraw(shader);
     }

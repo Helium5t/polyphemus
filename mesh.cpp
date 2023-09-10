@@ -111,7 +111,8 @@ void Mesh::LoadMaterialData(const aiMesh* m, const aiScene* s){
 
 void Mesh::LoadTexture(const aiMaterial* m, TexType tt, bool warnOnFailure){
     assert(texturesEnabled);
-    aiTextureType aiTT;
+    aiTextureType aiTT,
+            fallbackTT = aiTextureType_NONE;
     bool srgb = false;
     switch (tt){
         case TexType::Albedo:
@@ -126,6 +127,11 @@ void Mesh::LoadTexture(const aiMaterial* m, TexType tt, bool warnOnFailure){
             break;
         case TexType::AO:
             aiTT = aiTextureType_AMBIENT_OCCLUSION;
+            // Older models did not follow PBR naming standard. Some exports used
+            // lightmap as the field for AO. This is falling into an undeterministic case
+            // where an old model with no AO and a light map might end up being visualized with a lightmap
+            // instead of an ao map but 1 it's rare, 2 fuck'em boomers.
+            fallbackTT = aiTextureType_LIGHTMAP;
             break;
         case TexType::Emissive:
             aiTT = aiTextureType_EMISSIVE;
@@ -142,6 +148,17 @@ void Mesh::LoadTexture(const aiMaterial* m, TexType tt, bool warnOnFailure){
         std::string assetDirectory = fsPath.substr(0, fsPath.find_last_of('/'));
         std::string assetPath = assetDirectory + "/" + assetFileName.C_Str();
         Texture* t = new Texture(assetPath, tt, srgb);
+        textures.push_back(t);
+    }else if (fallbackTT != aiTextureType_NONE && m->GetTextureCount(fallbackTT) > 0){
+        aiString assetFileName;
+        m->GetTexture(fallbackTT, 0, &assetFileName);
+
+        std::string assetDirectory = fsPath.substr(0, fsPath.find_last_of('/'));
+        std::string assetPath = assetDirectory + "/" + assetFileName.C_Str();
+        Texture* t = new Texture(assetPath, tt, srgb);
+        if(warnOnFailure){
+            std::cerr << "[MESH][TEXTURE][LOAD][WARN] Requested texture (" << tex_name(tt) <<") is using fallback assimp type ("<< aiTextureTypeToString(fallbackTT) << ")" << std::endl;
+        }
         textures.push_back(t);
     }else{
         textures.push_back(new BlackTexture(tt));

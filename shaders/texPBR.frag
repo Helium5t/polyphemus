@@ -16,9 +16,6 @@ uniform sampler2D t_Normal;
 uniform sampler2D t_Mr;
 uniform sampler2D t_Ao;
 uniform sampler2D t_Emissive;
-uniform float m_roughness; // constant values just to test things, should actually get values from textures later on.
-uniform float m_metallic;  
-uniform vec3 m_albedo;
 uniform vec4 uv_transform;
 
 // Light ubo

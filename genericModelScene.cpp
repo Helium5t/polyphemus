@@ -34,9 +34,6 @@ void GenericModelScene::DrawUI() {
 
 	ImGui::Begin("Scene Settings", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse);
     ImGui::Text("Material Debug Properties");
-    ImGui::ColorEdit3("Albedo", &albedo[0]);
-    ImGui::SliderFloat("Metallic", &metallic, 0.f, 1.f);
-    ImGui::SliderFloat("Roughness", &roughness, 0.f, 1.f);
     if(ImGui::Button("Reload Shader")){
         LoadShader();
     }
@@ -75,9 +72,6 @@ void GenericModelScene::Update(GLFWwindow* w,float deltaTimeMs,glm::vec2 mouseDe
 void GenericModelScene::Draw(Camera* camera){
     Scene::Draw(camera);
 
-    shader->SetVec3("m_albedo", albedo);
-    shader->SetFloat("m_metallic", metallic);
-    shader->SetFloat("m_roughness", roughness);
     for(int i = 0; i <10 ; i++){
         if(i >= lightCount){
             shader->SetFloat("l_Strength[" + std::to_string(i) + "]", 0.f);

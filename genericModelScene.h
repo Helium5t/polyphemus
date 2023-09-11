@@ -13,10 +13,6 @@ class GenericModelScene : public Scene {
         virtual void LoadShader();
 
     private:
-	    glm::vec3 albedo = glm::vec3(1.f);
-	    float metallic =  .5f;
-	    float roughness = .5f;
-
         int lightCount = 1;
         glm::vec3 lightPositions[10];
         glm::vec3 lightColors[10];

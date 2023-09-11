@@ -43,9 +43,7 @@ void CustomTextureScene::LoadShader(){
 
 void CustomTextureScene::DrawUI() {
     // Debug (substitute with texture later on)
-
     ImGui::Begin("Scene Settings");
-    ImGui::Text("Material Debug Properties");
     ImGui::Separator();
     if(ImGui::Button("Reload Shader")){
         LoadShader();

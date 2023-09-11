@@ -49,7 +49,9 @@ Mesh::Mesh(const aiMesh* m, const aiScene* scene,const std::string& path, bool w
 
     indexCount = indices.size();
     vertexData.clear();
+    vertexData.shrink_to_fit();
     indices.clear();
+    indices.shrink_to_fit();
 }
 
 void Mesh::Draw(Shader* s){

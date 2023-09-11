@@ -20,8 +20,8 @@ bool Scene::PreviewTextures(){
 }
 
 void Scene::DrawTextureViewUI(){
-    ImGui::SetNextWindowPos(ImVec2(0, 300));
-	ImGui::SetNextWindowSize(ImVec2(400, 500));
+    ImGui::SetNextWindowPos(ImVec2(0, 500));
+	ImGui::SetNextWindowSize(ImVec2(400, 300));
     ImGui::Begin("Model View", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse);
     ImGui::CheckboxFlags("Show Albedo Map",   &shownTextureFlags, 1 << (unsigned) TexType::Albedo);
     ImGui::CheckboxFlags("Show Normal Map",   &shownTextureFlags, 1 << (unsigned) TexType::Normal);

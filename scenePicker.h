@@ -12,7 +12,7 @@ class Camera;
 
 class ScenePicker{
     public:
-        ScenePicker();
+        ScenePicker(glm::vec4& clearColor);
         void Update(GLFWwindow* w,float deltaTimeMs, glm::vec2 mouseDelta);
         void Draw(Camera* c);
         void DrawSceneUI();
@@ -41,6 +41,7 @@ class ScenePicker{
         // Scene Management
         Scene* activeScene = nullptr;
         std::vector<Scene *> availableScenes;
+        glm::vec4* bgColor = nullptr;
 
         // Model management (for generic model loading)
         unsigned int activeModel = 0;

@@ -26,6 +26,7 @@ class Renderer{
 
         // Scene Management
         ScenePicker* scenePicker;
+        glm::vec4 clearColor = glm::vec4(0.592f, 0.725f, 0.823f, 1.0f);
         
         // Window/Engine
         bool running = true;

@@ -32,8 +32,7 @@ void GenericModelScene::LoadShader(){
 
 void GenericModelScene::DrawUI() {
     ImGui::SetNextWindowPos(ImVec2(0, 20));
-	ImGui::SetNextWindowSize(ImVec2(400, 280));
-
+	ImGui::SetNextWindowSize(ImVec2(400, 480));
 	ImGui::Begin("Scene Settings", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse);
     ImGui::Text("Scene Properties");
     ImGui::ColorEdit4("Ambient Color", &ambientColor[0]);

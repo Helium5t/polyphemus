@@ -75,7 +75,7 @@ Renderer::Renderer(){
 
 
 void Renderer::SceneSetup(){
-    scenePicker = new ScenePicker();
+    scenePicker = new ScenePicker(clearColor);
     // Camera is facing -Z, Y-Up
     camera = new Camera(glm::vec3(0.0f, 0.0f, 5.0f), glm::vec3(0.0f,0.0f,-1.0f), glm::vec3(0.0f, 1.0f, 0.0f), screenW, screenH);
 
@@ -117,7 +117,7 @@ void Renderer::Cleanup(){
 void Renderer::PreFrame(){
     PP_IMGUI_NEWFRAME();
 
-    glClearColor(0.592f, 0.725f, 0.823f, 1.0f);
+    glClearColor(clearColor[0],clearColor[1],clearColor[2],clearColor[3]);
     glClear(GL_COLOR_BUFFER_BIT);
 	glClear(GL_DEPTH_BUFFER_BIT);
 }

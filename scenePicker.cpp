@@ -7,7 +7,8 @@
 #include "customTextureScene.h"
 #include "scenePicker.h"
 
-ScenePicker::ScenePicker(){
+ScenePicker::ScenePicker(glm::vec4& clearColor){
+    bgColor = &clearColor;
     availableScenes.push_back(new ChessScene());
     Assimp::Importer i;
     FindModels(MODEL_DIRECTORY, strlen(MODEL_DIRECTORY), i);
@@ -184,6 +185,9 @@ void ScenePicker::DrawSelectModelAndTextureUI(){
 }
 
 void ScenePicker::DrawSceneUI(){
+    ImGui::Begin("Scene Settings", nullptr,  ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse);
+    ImGui::ColorEdit4("Background Color", (float*)bgColor);
+    ImGui::End();
     if(activeScene){
         activeScene->DrawUI();
     }

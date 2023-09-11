@@ -17,4 +17,6 @@ class GenericModelScene : public Scene {
         glm::vec3 lightPositions[10];
         glm::vec3 lightColors[10];
         float lightStrengths[10];
+
+        glm::vec4 ambientColor;
 };

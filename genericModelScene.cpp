@@ -18,7 +18,9 @@ GenericModelScene::GenericModelScene(std::string modelPath){
     lightPositions[0] = glm::vec3(0.f, 1.f, 1.f);
     lightColors[0] = glm::vec3(1.f);
     lightStrengths[0] = 1.f;
+    ambientColor = glm::vec4(0.f);
 }
+
 GenericModelScene::~GenericModelScene(){
 }
 
@@ -33,7 +35,8 @@ void GenericModelScene::DrawUI() {
 	ImGui::SetNextWindowSize(ImVec2(400, 280));
 
 	ImGui::Begin("Scene Settings", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse);
-    ImGui::Text("Material Debug Properties");
+    ImGui::Text("Scene Properties");
+    ImGui::ColorEdit4("Ambient Color", &ambientColor[0]);
     if(ImGui::Button("Reload Shader")){
         LoadShader();
     }
@@ -72,6 +75,7 @@ void GenericModelScene::Update(GLFWwindow* w,float deltaTimeMs,glm::vec2 mouseDe
 void GenericModelScene::Draw(Camera* camera){
     Scene::Draw(camera);
 
+    shader->SetVec4("l_ambient", ambientColor);
     for(int i = 0; i <10 ; i++){
         if(i >= lightCount){
             shader->SetFloat("l_Strength[" + std::to_string(i) + "]", 0.f);

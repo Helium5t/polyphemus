@@ -27,6 +27,7 @@ uniform vec3  l_Pos[10];
 uniform vec3  l_Color[10];
 uniform float l_Strength[10];
 uniform vec3  l_CamPos;
+uniform vec4 l_ambient;
 
 // Convert vector from tangent space to world space, normals are stored in tangent space in the texture.
 vec3 TStoWSvector(vec3 v){
@@ -112,7 +113,7 @@ vec4 BRDF(vec3 f0, vec3 n, vec3 v, float roughness, float metallic, vec3 albedo,
 
         lOut += (kDiff * albedo / PI + spec) * lRadiance * ndl;
     }
-    vec3 ambient = 50. * EPSILON * albedo;
+    vec3 ambient = l_ambient.xyz * l_ambient.w * albedo;
     if(ao > EPSILON){
         ambient *= ao;
     }

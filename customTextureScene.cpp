@@ -19,6 +19,7 @@ CustomTextureScene::CustomTextureScene(ModelTextureData mtd){
     lightPositions[0] = glm::vec3(0.f, 1.f, 1.f);
     lightColors[0] = glm::vec3(1.f);
     lightStrengths[0] = 1.f;
+    ambientColor = glm::vec4(0.f);
 
     textures.push_back(new Texture(data.albedoPath, TexType::Albedo, true));
     textures.push_back(new Texture(data.normalPath, TexType::Normal));
@@ -43,8 +44,8 @@ void CustomTextureScene::LoadShader(){
 
 void CustomTextureScene::DrawUI() {
     // Debug (substitute with texture later on)
-    ImGui::Begin("Scene Settings");
-    ImGui::Separator();
+    ImGui::Begin("Scene Settings", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse);
+    ImGui::ColorEdit4("Ambient Color", &ambientColor[0]);
     if(ImGui::Button("Reload Shader")){
         LoadShader();
     }
@@ -83,7 +84,7 @@ void CustomTextureScene::Update(GLFWwindow* w,float deltaTimeMs,glm::vec2 mouseD
 
 void CustomTextureScene::Draw(Camera* camera){
     Scene::Draw(camera);
-    
+    shader->SetVec4("l_ambient", ambientColor);
     
     for(int i = 0; i <10 ; i++){
         if(i >= lightCount){

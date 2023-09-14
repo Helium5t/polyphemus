@@ -3,15 +3,19 @@
 #include "model.h"
 #include "shaders.h"
 #include "camera.h"
+#include "textures.h"
 #include "chessScene.h"
 
 ChessScene::ChessScene(){
     Shader* fallback = new Shader("fallback.vert", "fallback.frag");
     shader = new Shader("hellotex.vert","hellotex.frag",fallback);
-
+    mainShader = shader;
+    textureShader = shader;
 }
 
-void ChessScene::DrawUI(){/* No specific UI so no point in spending the call time to draw UI here */}
+void ChessScene::DrawUI(){
+    Scene::DrawTextureViewUI();
+    /* No specific UI so no point in spending the call time to draw UI here */}
 
 void ChessScene::Update(GLFWwindow* w,float deltaTimeMs,glm::vec2 mouseDelta){
     if(!ready){

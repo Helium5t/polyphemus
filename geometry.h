@@ -49,6 +49,7 @@ class Mesh{
         // Material info
         bool texturesEnabled;
         std::vector<Texture*> textures;
+        glm::vec4 materialBaseColor;
 
         // Device Memory
         unsigned int indexCount = 0;

@@ -55,6 +55,7 @@ Mesh::Mesh(const aiMesh* m, const aiScene* scene,const std::string& path, bool w
 }
 
 void Mesh::Draw(Shader* s){
+    s->SetVec4("c_Base", materialBaseColor);
     s->SetBool("b_packedMR", texturesEnabled);
     if (texturesEnabled){ // Not actually necessary as textures would be empty given they don't get loaded. Added for clarity.
         for(auto t: textures){
@@ -85,7 +86,7 @@ void Mesh::AllocateBindBuffers(){
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void*) (sizeof(float) * 3));
     // UV
     glEnableVertexAttribArray(2);
-    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void*) (sizeof(float) * 6));
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void*) (sizeof(float) * 6));
     // Tangents
     glEnableVertexAttribArray(3);
     glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (void*) (sizeof(float) * 8));
@@ -109,6 +110,9 @@ void Mesh::LoadMaterialData(const aiMesh* m, const aiScene* s){
     LoadTexture(mat, TexType::Normal);
     LoadTexture(mat, TexType::AO, false);
     LoadTexture(mat, TexType::Emissive, false);
+    aiColor4D col;
+    aiGetMaterialColor(mat, AI_MATKEY_BASE_COLOR, &col);
+    materialBaseColor = glm::vec4(col[0],col[1], col[2], col[3]);
 }
 
 void Mesh::LoadTexture(const aiMaterial* m, TexType tt, bool warnOnFailure){

@@ -124,8 +124,10 @@ vec4 BRDF(vec3 f0, vec3 n, vec3 v, float roughness, float metallic, vec3 albedo,
 void main(){
     
     vec2 uv = (v_uv + uv_transform.xy)  * uv_transform.zw;
-    vec4 baseCol = mix(vec4(1.), c_Base, c_Base.w);
     vec4 texAlbedo =   texture(t_Albedo, uv);
+    if (length(texAlbedo.xyz) < EPSILON){
+        texAlbedo = c_Base;
+    }
     vec4 texNormal =   texture(t_Normal, uv);
     vec4 texMr =       texture(t_Mr, uv);
     float ao =         texture(t_Ao, uv).r ;

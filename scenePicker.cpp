@@ -4,6 +4,7 @@
 #include <assimp/Importer.hpp>
 #include "chessScene.h"
 #include "genericModelScene.h"
+#include "frostbiteModelScene.h"
 #include "customTextureScene.h"
 #include "scenePicker.h"
 
@@ -53,6 +54,8 @@ void ScenePicker::FindTextures(std::string path, int skipChars){
 void ScenePicker::ResetUIState(){
     activeScene = nullptr;
     genericModelOpen = false;
+    frostbiteModelOpen = false;
+    customTextureOpen = false;
     selectionOpen = false;
 }
 
@@ -83,6 +86,12 @@ void ScenePicker::DrawSelectUI(){
             ImGui::CloseCurrentPopup();
             selectionOpen = false;
             genericModelOpen = true;
+        }
+        if(ImGui::Button("Frostbite PBR Model Loader")){
+            ImGui::CloseCurrentPopup();
+            selectionOpen = false;
+            genericModelOpen = true;
+            frostbiteModelOpen = true;
         }
         if(ImGui::Button("Custom Texture Model Viewer")){
             ImGui::CloseCurrentPopup();
@@ -121,7 +130,12 @@ void ScenePicker::DrawSelectModelUI(){
         DrawModelOptionsUI();
         if(ImGui::Button("Load Model")){
             std::string fullPath = modelPaths[activeModel];
-            activeScene = new GenericModelScene(fullPath);
+            if(frostbiteModelOpen){
+                activeScene = new FrostbiteModelScene(fullPath);
+                frostbiteModelOpen = false;
+            }else{
+                activeScene = new GenericModelScene(fullPath);
+            }
             genericModelOpen = false;
             ImGui::CloseCurrentPopup();
         }

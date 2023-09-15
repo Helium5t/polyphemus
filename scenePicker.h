@@ -60,4 +60,5 @@ class ScenePicker{
         bool selectionOpen;
         bool genericModelOpen;
         bool customTextureOpen;
+        bool frostbiteModelOpen;
 };

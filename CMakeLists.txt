@@ -117,6 +117,7 @@ add_executable(
     scene.cpp
     chessScene.cpp
     genericModelScene.cpp
+    frostbiteModelScene.cpp
     customTextureScene.cpp
     scenePicker.cpp)
 

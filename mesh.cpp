@@ -105,6 +105,16 @@ void Mesh::LoadMaterialData(const aiMesh* m, const aiScene* s){
     }
 
     aiMaterial* mat = s->mMaterials[m->mMaterialIndex];
+    #ifdef PP_DEBUG_MATERIALS
+    std::cout << "---" << std::endl;
+    for(int i =0; i < (int) AI_TEXTURE_TYPE_MAX; i++){
+        if(mat->GetTextureCount((aiTextureType)i) > 0){
+            aiString assetFileName;
+            mat->GetTexture((aiTextureType)i, 0, &assetFileName);
+            std::cout << aiTextureTypeToString((aiTextureType) i) << " OK:" << assetFileName.C_Str() << std::endl;
+        }
+    }
+    #endif
     LoadTexture(mat, TexType::Albedo);
     LoadTexture(mat, TexType::MR);
     LoadTexture(mat, TexType::Normal);
